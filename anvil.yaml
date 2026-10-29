@@ -268,7 +268,7 @@ native_deps:
     \ its own <link rel=\"icon\">, so drop any other icon link. */\n(function () {\n  function keep() {\n    var ours = document.getElementById('ui-favicon');\n\
     \    if (!ours) return;\n    document.querySelectorAll('link[rel~=\"icon\"]').forEach(function (l) { if (l !== ours) l.remove();\
     \ });\n  }\n  keep();\n  document.addEventListener('DOMContentLoaded', keep);\n  window.addEventListener('load', keep);\n\
-    })();\n</script>\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=e804f1bb32\">\n<script src=\"_/theme/app.js?v=781e6d27f8\"\
+    })();\n</script>\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=e804f1bb32\">\n<script src=\"_/theme/app.js?v=19172f9265\"\
     ></script>\n"
 package_name: Snackpuncher
 runtime_options:

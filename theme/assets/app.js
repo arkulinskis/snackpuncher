@@ -1623,7 +1623,7 @@
     var info, land, content, xr = { vr: false, ar: false }, mode = 'flat', session = null;
     var state = 'loading', B = null, cal = { x: 0, z: 0, h: 1.6 };
     var gloves = [], flatGloves = [], keys = {}, body = { duck: 0, lean: 0, block: 0 };
-    var popups = [], parts = null, vr = { items: [], orbs: [], hud: null, tip: null, lastOrb: 0 };
+    var popups = [], parts = null, vr = { items: [], orbs: [], hud: null, tip: null, lastOrb: 0, waitHead: 0, waited: 0, redo: null };
     var test = window.SP_TEST || null;
     var tmpV = null, tmpV2 = null, headV = null;
     var sessionStart = Date.now();
@@ -1805,7 +1805,7 @@
     }
     function vrClear() {
       vr.items.forEach(function (o) { scene.remove(o); });
-      vr.items = []; vr.orbs = [];
+      vr.items = []; vr.orbs = []; vr.redo = null;
     }
     function vrOrb(text, x, y, z, action, color) {
       var g = new T.Group();
@@ -2125,7 +2125,7 @@
       g.add(face);
       g.position.set(cal.x, cal.h - 0.3, cal.z + Z_HIT - 0.12);
       scene.add(g);
-      B.cage = { obj: g, end: now() + 7, face: face, who: who, nextAuto: 0 };
+      B.cage = { obj: g, end: now() + 7, face: face, who: who, nextAuto: now() + 0.25 };
       if (mode !== 'flat') face.lookAt(headPos());
       callout('Free ' + esc(who.name) + '!<small>Punch the cage as fast as you can!</small>', 2000);
       audio.chime();
@@ -2141,7 +2141,11 @@
           else if (d > 0.46) g.inCage = false;
         });
       }
-      if (test && test.autoplay && t > c.nextAuto) { c.nextAuto = t + 0.25; flatPunch(B.flurry % 2, c.obj.position); flurryHit(null); }
+      // the test robot punches 4 times a second of game time, catching up when frames are slow
+      if (test && test.autoplay) {
+        if (t > c.nextAuto) flatPunch(B.flurry % 2, c.obj.position);
+        while (t > c.nextAuto && c.nextAuto < c.end) { c.nextAuto += 0.25; flurryHit(null); }
+      }
       if (t > c.end) {
         burst(c.obj.position, ['#8a8f96', '#d23a2a', '#ffd36a', '#fffaf0'], 40);
         scene.remove(c.obj);
@@ -2243,12 +2247,14 @@
       var h = { x: cal.x, y: cal.h, z: cal.z };
       function card() {
         vrClear();
+        h = { x: cal.x, y: cal.h, z: cal.z };
         var rows = rewardRows(r).slice(0, 5).map(function (w) { return w.em + '  ' + w.title; });
         var acc = Math.round((r.acc || 0) * 100);
         var c = vrCanvasPlane(1.0, 0.9, drawCard({ eyebrow: info.training ? 'Training Yard' : land.name, title: resultTitle(r),
           body: ['★'.repeat(r.stars || 0) + '☆'.repeat(3 - (r.stars || 0)) + '   ' + B.score.toLocaleString() + ' pts · ' + acc + '% · ' + Math.round(r.kcal || 0) + ' kcal'].concat(rows),
           foot: 'Punch an orb to choose' }));
         vrAdd(c, h.x, h.y + 0.05, h.z - 1.25);
+        vr.redo = card;
         var next = SP.next(tid), canNext = next && SP.unlocked(next) && (r.cleared || info.training) && !r.guest;
         if (canNext) vrOrb('NEXT ▶', h.x - 0.32, h.y - 0.42, h.z - 0.55, function () { goTerritory(next); });
         vrOrb('AGAIN', canNext ? h.x : h.x - 0.18, h.y - 0.42, h.z - 0.55, function () { vrStartCard(); }, '#6aa84f');
@@ -2265,6 +2271,7 @@
         if (i >= s.lines.length) return done();
         var c = vrCanvasPlane(1.1, 0.42, drawLine(s.lines[i]));
         vrAdd(c, cal.x, cal.h + 0.05, cal.z - 1.2);
+        vr.redo = show;
         vrOrb(i < s.lines.length - 1 ? '▶ NEXT' : '▶ DONE', cal.x + 0.25, cal.h - 0.38, cal.z - 0.55, function () { i++; show(); });
       }
       show();
@@ -2283,8 +2290,9 @@
       var c = vrCanvasPlane(1.0, 0.56, drawCard({ eyebrow: info.training ? 'Lesson' : land.name + ' · ' + land.element, title: info.t.name,
         body: [info.t.boss ? 'Boss: ' + land.boss.name : info.t.villager ? 'Rescue: ' + content.villagers[info.t.villager].name : 'Learn every move', movesLine,
           'Green ring = left fist · red = right · gold = either'],
-        foot: 'Punch the golden orb to begin' }));
+        foot: 'Punch the golden orb to begin · trigger = bring cards to you' }));
       vrAdd(c, cal.x, cal.h + 0.12, cal.z - 1.3);
+      vr.redo = vrStartCard;
       vrOrb('START', cal.x, cal.h - 0.32, cal.z - 0.5, function () { startBattle(); });
       vrOrb('EXIT VR', cal.x + 0.55, cal.h - 0.5, cal.z - 0.6, function () { if (session) session.end(); }, '#c9b8a0');
     }
@@ -2328,8 +2336,28 @@
           g.mesh = kit.glove(kit.HAND[g.hand], skinColor()); grip.add(g.mesh);
         });
         grip.addEventListener('disconnected', function () { g.source = null; g.tracked = false; if (g.mesh) { grip.remove(g.mesh); g.mesh = null; } });
+        // trigger (or a pinch with hand tracking) brings the current card back in front of you
+        var ctl = renderer.xr.getController(i);
+        scene.add(ctl);
+        ctl.addEventListener('select', recenterCards);
         gloves.push(g);
       })(i);
+    }
+    function recenterCards() {
+      if (mode === 'flat' || !vr.redo || vr.waitHead) return;
+      var h = headPos();
+      cal = { x: h.x, z: h.z, h: Math.max(0.9, h.y) };
+      audio.tick && audio.tick();
+      vr.redo();
+    }
+    // The headset only reports where your head is once it has drawn a frame or two,
+    // so cards are placed after that (before, the camera still sits at the flat-screen spot).
+    function waitForHead() {
+      if (!vr.waitHead || mode === 'flat') return;
+      vr.waited++;
+      var ready = renderer.xr.isPresenting && headPos().y > 0.3;
+      if (ready) vr.waitHead--;
+      if (vr.waitHead <= 0 || vr.waited > 90) { vr.waitHead = 0; vrStartCard(); }
     }
     function trackGloves(dt) {
       gloves.forEach(function (g) {
@@ -2356,7 +2384,9 @@
           flatGloves.forEach(function (g) { g.mesh.visible = false; });
           panelWrap.hidden = false;
           panelWrap.innerHTML = '<div class="pl-vrnote">You\'re in the headset. Take it off or press the menu button to come back.</div>';
-          vrStartCard();
+          // park the camera below the floor: the first real head pose from the headset replaces it
+          camera.position.set(0, -5, 0); camera.updateMatrixWorld(true);
+          vrClear(); vr.waited = 0; vr.waitHead = 3;
         });
         s.addEventListener('end', onXREnd);
         s.addEventListener('visibilitychange', function () {
@@ -2366,7 +2396,7 @@
       }, function (e) { UI.toast('Couldn\'t start VR: ' + (e && e.message || 'the headset said no'), 'error'); });
     }
     function onXREnd() {
-      session = null;
+      session = null; vr.waitHead = 0;
       if (!alive) return;
       mode = 'flat'; applyMode(); vrClear(); vrTip(null);
       if (vr.hud) { scene.remove(vr.hud); vr.hud = null; }
@@ -2569,7 +2599,7 @@
       if (B && state === 'battle') stepBattle(dt);
       else if (B && state === 'flurry') stepFlurry(dt);
       else if (state === 'menu' && mode === 'flat') { camera.position.set(Math.sin(tt * 0.1) * 0.6, 1.7, 1.6); camera.lookAt(0, 1.3, -6); }
-      if (mode !== 'flat') vrOrbs();
+      if (mode !== 'flat') { waitForHead(); vrOrbs(); }
       world.update(dt, tt);
       stepParts(dt); stepPopups(dt);
       if (B && (state === 'battle' || state === 'flurry')) {
