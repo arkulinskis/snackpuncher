@@ -259,7 +259,7 @@ metadata:
   title: 'Snackpuncher: punch fast food, save the realm'
 name: Snackpuncher
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=03e6b1608d\"></script>\n<meta name=\"viewport\" content=\"width=device-width,\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=200a65bc9f\"></script>\n<meta name=\"viewport\" content=\"width=device-width,\
     \ initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#2f6d3a\">\n<meta name=\"apple-mobile-web-app-capable\"\
     \ content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"\
     https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap\"\
