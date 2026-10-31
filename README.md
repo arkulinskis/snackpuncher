@@ -7,7 +7,7 @@ an ordinary screen with mouse, touch or keyboard. Every battle is a workout: the
 workout ledger keeps score. Built on [Anvil](https://anvil.works) and three.js.
 
 - **App repo:** github.com/arkulinskis/snackpuncher (branch `master`). Anvil pulls `master`.
-- **Live:** not published yet.
+- **Live:** https://snackpuncher.anvil.app
 
 ## What it does
 
