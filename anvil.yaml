@@ -253,16 +253,47 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: 'A VR punching quest for Meta Quest and any WebXR headset: fight the Greasy Horde across ten lands, free villagers,
-    collect 100 treasures and get a full-body workout.'
+  description: 'A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands.
+    Every battle is a workout. Also plays on screens.'
   logo_img: asset:icon-512.png
-  title: 'Snackpuncher: punch fast food, save the realm'
+  title: 'Snackpuncher: a VR punching workout quest for Meta Quest'
 name: Snackpuncher
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=7cc8456bda\"></script>\n<meta name=\"viewport\" content=\"width=device-width,\
-    \ initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#2f6d3a\">\n<meta name=\"apple-mobile-web-app-capable\"\
-    \ content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"\
-    https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap\"\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=7cc8456bda\"></script>\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/snackpuncher.json\
+    \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://snackpuncher.anvil.app/\">\n<meta name=\"robots\"\
+    \ content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"\
+    VR workout game, Meta Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest\
+    \ passthrough game, no install VR game\">\n<meta name=\"author\" content=\"Arkvital\">\n<meta property=\"og:type\" content=\"\
+    website\">\n<meta property=\"og:site_name\" content=\"Snackpuncher\">\n<meta property=\"og:title\" content=\"Snackpuncher:\
+    \ a VR punching workout quest for Meta Quest\">\n<meta property=\"og:description\" content=\"A VR punching quest for Meta\
+    \ Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays\
+    \ on screens.\">\n<meta property=\"og:locale\" content=\"en_CA\">\n<meta property=\"og:url\" content=\"https://snackpuncher.anvil.app/\"\
+    >\n<meta property=\"og:image\" content=\"https://snackpuncher.anvil.app/_/theme/og-image.png\">\n<meta property=\"og:image:width\"\
+    \ content=\"1200\"><meta property=\"og:image:height\" content=\"630\">\n<meta property=\"og:image:alt\" content=\"Snackpuncher:\
+    \ Punch the Greasy Horde across ten lands. Every battle is a workout.\">\n<meta name=\"twitter:card\" content=\"summary_large_image\"\
+    >\n<meta name=\"twitter:title\" content=\"Snackpuncher: a VR punching workout quest for Meta Quest\">\n<meta name=\"twitter:description\"\
+    \ content=\"A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands.\
+    \ Every battle is a workout. Also plays on screens.\">\n<meta name=\"twitter:image\" content=\"https://snackpuncher.anvil.app/_/theme/og-image.png\"\
+    >\n<link rel=\"alternate\" type=\"text/plain\" title=\"Snackpuncher for AI assistants\" href=\"https://snackpuncher.anvil.app/llms.txt\"\
+    >\n<script type=\"application/ld+json\">{\"@context\": \"https://schema.org\", \"@graph\": [{\"@type\": \"VideoGame\"\
+    , \"@id\": \"https://snackpuncher.anvil.app/#app\", \"name\": \"Snackpuncher\", \"url\": \"https://snackpuncher.anvil.app/\"\
+    , \"description\": \"A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across\
+    \ ten lands. Every battle is a workout. Also plays on screens.\", \"image\": \"https://snackpuncher.anvil.app/_/theme/og-image.png\"\
+    , \"inLanguage\": \"en\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"}, \"keywords\": \"VR workout game, Meta\
+    \ Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest passthrough game,\
+    \ no install VR game\", \"applicationCategory\": \"GameApplication\", \"operatingSystem\": \"Any (web browser)\", \"browserRequirements\"\
+    : \"Requires JavaScript and a modern web browser\", \"featureList\": [\"Ten lands, 41 villagers to free and 100 treasures\"\
+    , \"Plays in the Meta Quest Browser with no install, plus a passthrough mode\", \"Also playable on a normal screen with\
+    \ mouse, touch or keyboard\", \"Moves that rotate between muscle groups, with a workout ledger\", \"A Training Yard that\
+    \ teaches every move, playable as a guest\"], \"audience\": {\"@type\": \"Audience\", \"audienceType\": \"Meta Quest and\
+    \ WebXR players who want a workout that feels like a quest\"}}, {\"@type\": \"WebSite\", \"@id\": \"https://snackpuncher.anvil.app/#site\"\
+    , \"url\": \"https://snackpuncher.anvil.app/\", \"name\": \"Snackpuncher\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"\
+    }}, {\"@type\": \"Organization\", \"@id\": \"https://arkvital.com/#org\", \"name\": \"Arkvital\", \"url\": \"https://arkvital.com\"\
+    , \"email\": \"arkvital@outlook.com\", \"address\": {\"@type\": \"PostalAddress\", \"addressLocality\": \"Montreal\",\
+    \ \"addressRegion\": \"QC\", \"addressCountry\": \"CA\"}}]}</script>\n<!-- seo:end -->\n<meta name=\"viewport\" content=\"\
+    width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#2f6d3a\">\n<meta name=\"\
+    apple-mobile-web-app-capable\" content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link\
+    \ rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap\"\
     \ rel=\"stylesheet\">\n<link id=\"ui-favicon\" rel=\"icon\" type=\"image/svg+xml\" href=\"_/theme/icon.svg?v=03722c5727\"\
     >\n<link rel=\"apple-touch-icon\" href=\"_/theme/icon-180.png?v=03722c5727\">\n<script>\n/* Keep our tab icon: Anvil adds\
     \ its own <link rel=\"icon\">, so drop any other icon link. */\n(function () {\n  function keep() {\n    var ours = document.getElementById('ui-favicon');\n\
