@@ -19,12 +19,14 @@ html .anvil-spinner::after, #loadingSpinner::after {
   content: ""; position: absolute; inset: 14px; border-radius: 16px;
   background: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 width=%22100%22 height=%22100%22%3E %3Cpath d=%22M50 4 L90 16 V47 C90 72 72 88 50 96 C28 88 10 72 10 47 V16 Z%22 fill=%22%232f6d3a%22 stroke=%22%23c48d26%22 stroke-width=%225%22 stroke-linejoin=%22round%22/%3E %3Cpath d=%22M50 12 L82 22 V47 C82 67 68 80 50 87 C32 80 18 67 18 47 V22 Z%22 fill=%22none%22 stroke=%22%23fffaf0%22 stroke-opacity=%22.28%22 stroke-width=%222%22/%3E %3Cg stroke=%22%23ffd36a%22 stroke-width=%225%22 stroke-linecap=%22round%22%3E %3Cpath d=%22M50 17 V26%22/%3E%3Cpath d=%22M33 22 L38 30%22/%3E%3Cpath d=%22M67 22 L62 30%22/%3E %3C/g%3E %3Crect x=%2238%22 y=%2270%22 width=%2224%22 height=%2213%22 rx=%223%22 fill=%22%23d23a2a%22 stroke=%22%232b1d12%22 stroke-width=%223.5%22/%3E %3Crect x=%2229%22 y=%2234%22 width=%2242%22 height=%2238%22 rx=%2210%22 fill=%22%23fffaf0%22 stroke=%22%232b1d12%22 stroke-width=%223.5%22/%3E %3Cpath d=%22M39.5 35 V50 M50 35 V50 M60.5 35 V50%22 stroke=%22%232b1d12%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E %3Crect x=%2229%22 y=%2252%22 width=%2227%22 height=%2212%22 rx=%226%22 fill=%22%23f3e2c2%22 stroke=%22%232b1d12%22 stroke-width=%223.5%22/%3E %3C/svg%3E") center / contain no-repeat;
 }
+/* loader:start beat brand=#2f6d3a (made by APP_MAKER/tools/loaders.py; rerun it instead of editing) */
+html .anvil-spinner, #loadingSpinner { animation: app-beat 1.2s ease-in-out infinite; }
 html .anvil-spinner::before, #loadingSpinner::before {
-  content: ""; position: absolute; inset: -7px; border-radius: 32px; border: 3px solid transparent;
-  border-top-color: #2f6d3a; border-right-color: #d23a2a; animation: app-turn 1s linear infinite;
+  content: none;
 }
-@keyframes app-turn { to { transform: rotate(360deg); } }
+@keyframes app-beat { 0%, 45%, 100% { transform: scale(1); } 12% { transform: scale(1.1); } 22% { transform: scale(.98); } 32% { transform: scale(1.07); } }
 @keyframes app-breathe { 50% { transform: scale(.94); } }
+/* loader:end */
 @media (prefers-reduced-motion: reduce) {
   html .anvil-spinner, #loadingSpinner { animation: none; }
   html .anvil-spinner::before, #loadingSpinner::before { animation-duration: 3s; }
