@@ -1475,50 +1475,56 @@
           ['Is it free?', 'Yes. There are no ads and nothing to buy. Sprouts, treasures and upgrades are earned only by playing.']]
   };
 
+  // A wide battle scene: the fist meets the burger while the rest of the Greasy Horde waits its turn
   function heroArt() {
-    return '<div class="lp-art" aria-hidden="true"><svg viewBox="0 0 520 460">' +
-      '<rect class="paper" x="10" y="10" width="500" height="440" rx="22" stroke-width="4"/>' +
-      '<rect class="paper2" x="24" y="24" width="472" height="412" rx="14" stroke-width="2"/>' +
-      '<clipPath id="lpc"><rect x="24" y="24" width="472" height="412" rx="14"/></clipPath><g clip-path="url(#lpc)">' +
-      '<rect class="skyf" x="24" y="24" width="472" height="300"/>' +
-      '<circle cx="430" cy="86" r="30" fill="#ffd36a"/>' +
-      '<path class="hill1" d="M24 300 Q140 220 260 290 T496 270 V436 H24 Z"/>' +
-      '<path class="hill2" d="M24 350 Q170 300 300 345 T496 330 V436 H24 Z"/>' +
-      '<path d="M200 436 Q250 380 280 340 L300 340 Q300 390 330 436 Z" fill="#e7d5a5" opacity=".9"/>' +
-      '<g transform="translate(95 128)"><path d="M0 40 L30 0 L60 40 Z" fill="#2f6d4a"/><rect x="26" y="40" width="8" height="14" fill="#7a5230"/></g>' +
-      '<g transform="translate(410 170)"><path d="M0 46 L26 0 L52 46 Z" fill="#3f7f5a"/><rect x="22" y="46" width="8" height="12" fill="#7a5230"/></g>' +
-      // the burger
-      '<g class="wob"><ellipse cx="360" cy="320" rx="92" ry="12" fill="rgba(0,0,0,.12)"/>' +
-      '<path d="M272 290 Q272 310 290 312 H430 Q448 310 448 290 Z" fill="#d79b52" stroke="#2b1d12" stroke-width="4"/>' +
-      '<rect x="266" y="262" width="188" height="30" rx="14" fill="#6b3a1f" stroke="#2b1d12" stroke-width="4"/>' +
-      '<path d="M268 262 L300 278 L330 258 L362 280 L394 258 L424 278 L452 260 L452 256 L268 256 Z" fill="#ffc93c" stroke="#2b1d12" stroke-width="3"/>' +
-      '<path d="M262 252 Q270 236 290 248 Q310 232 330 248 Q350 234 370 248 Q390 232 410 248 Q430 234 450 248 Q462 240 458 256 H262 Z" fill="#6fbf4a" stroke="#2b1d12" stroke-width="3"/>' +
-      '<path d="M266 248 Q266 150 360 148 Q454 150 454 248 Z" fill="#e0a458" stroke="#2b1d12" stroke-width="4"/>' +
-      '<g fill="#fff6dc"><ellipse cx="320" cy="176" rx="6" ry="3"/><ellipse cx="370" cy="166" rx="6" ry="3"/><ellipse cx="412" cy="186" rx="6" ry="3"/><ellipse cx="340" cy="210" rx="6" ry="3"/></g>' +
-      '<circle cx="334" cy="212" r="20" fill="#fff" stroke="#2b1d12" stroke-width="3"/><circle cx="388" cy="212" r="20" fill="#fff" stroke="#2b1d12" stroke-width="3"/>' +
-      '<circle cx="330" cy="216" r="9" fill="#1b130c"/><circle cx="392" cy="218" r="9" fill="#1b130c"/>' +
-      '<path d="M312 186 L350 196" stroke="#2b1d12" stroke-width="7" stroke-linecap="round"/><path d="M410 186 L372 196" stroke="#2b1d12" stroke-width="7" stroke-linecap="round"/>' +
-      '<path d="M344 238 Q362 228 378 238" stroke="#2b1d12" stroke-width="4" fill="none" stroke-linecap="round"/></g>' +
-      // the pow
-      '<g class="pow"><path d="M300 200 L312 222 L338 214 L322 236 L344 252 L316 254 L314 280 L298 260 L276 274 L284 250 L260 240 L286 232 L276 210 Z" fill="#ffd36a" stroke="#d23a2a" stroke-width="4"/></g>' +
-      // the fist
-      '<g class="fist"><rect x="60" y="214" width="120" height="44" rx="10" fill="#d23a2a" stroke="#2b1d12" stroke-width="4"/>' +
-      '<rect x="160" y="196" width="104" height="82" rx="26" fill="#fffaf0" stroke="#2b1d12" stroke-width="4"/>' +
-      '<path d="M238 200 V222 M238 236 V254 M238 268 V276" stroke="#2b1d12" stroke-width="3" stroke-linecap="round"/>' +
-      '<rect x="168" y="236" width="56" height="24" rx="12" fill="#f3e2c2" stroke="#2b1d12" stroke-width="4"/>' +
-      '<path d="M100 214 V258" stroke="#ffd36a" stroke-width="6"/></g>' +
-      // Pickles
-      '<g transform="translate(70 330)"><ellipse cx="34" cy="58" rx="30" ry="6" fill="rgba(0,0,0,.12)"/><rect x="10" y="0" width="48" height="60" rx="24" fill="#6f9a3a" stroke="#2b1d12" stroke-width="3"/>' +
-      '<g fill="#8fbf55"><circle cx="22" cy="18" r="3"/><circle cx="44" cy="34" r="3"/><circle cx="24" cy="46" r="3"/></g>' +
-      '<circle cx="26" cy="22" r="8" fill="#fff" stroke="#2b1d12" stroke-width="2"/><circle cx="44" cy="22" r="8" fill="#fff" stroke="#2b1d12" stroke-width="2"/>' +
-      '<circle cx="28" cy="24" r="3.5" fill="#1b130c"/><circle cx="46" cy="24" r="3.5" fill="#1b130c"/><path d="M28 40 Q35 36 42 40" stroke="#2b1d12" stroke-width="2.5" fill="none"/></g>' +
-      // Sir Broccolot
-      '<g transform="translate(160 344)"><ellipse cx="30" cy="54" rx="24" ry="5" fill="rgba(0,0,0,.12)"/><rect x="22" y="26" width="16" height="28" rx="5" fill="#9cc27a" stroke="#2b1d12" stroke-width="3"/>' +
-      '<g fill="#3f8f3a" stroke="#2b1d12" stroke-width="3"><circle cx="18" cy="20" r="13"/><circle cx="42" cy="20" r="13"/><circle cx="30" cy="8" r="14"/></g>' +
-      '<circle cx="25" cy="20" r="5" fill="#fff" stroke="#2b1d12" stroke-width="1.5"/><circle cx="36" cy="20" r="5" fill="#fff" stroke="#2b1d12" stroke-width="1.5"/>' +
-      '<circle cx="26" cy="21" r="2" fill="#1b130c"/><circle cx="37" cy="21" r="2" fill="#1b130c"/>' +
-      '<path d="M44 40 L66 14" stroke="#8f9aa6" stroke-width="4" stroke-linecap="round"/><path d="M42 36 L50 44" stroke="#c48d26" stroke-width="4" stroke-linecap="round"/></g>' +
-      '</g></svg></div>';
+    return '<div class="lp-art lp-scene" aria-hidden="true"><svg viewBox="0 0 1200 340" preserveAspectRatio="xMidYMax slice">' +
+      '<path class="hill1" d="M0 250 Q160 170 340 230 T720 215 T1200 200 V340 H0 Z"/>' +
+      '<path class="hill2" d="M0 290 Q220 240 420 285 T860 270 T1200 262 V340 H0 Z"/>' +
+      '<path d="M560 340 Q610 300 640 270 L680 270 Q690 305 740 340 Z" fill="#e7d5a5" opacity=".9"/>' +
+      '<g transform="translate(60 150)"><path d="M0 50 L36 0 L72 50 Z" fill="#2f6d4a"/><rect x="31" y="50" width="10" height="18" fill="#7a5230"/></g>' +
+      '<g transform="translate(1090 128)"><path d="M0 56 L32 0 L64 56 Z" fill="#3f7f5a"/><rect x="27" y="56" width="10" height="16" fill="#7a5230"/></g>' +
+      '<g transform="translate(330 -28)">' +
+        '<g class="wob"><ellipse cx="360" cy="320" rx="92" ry="12" fill="rgba(0,0,0,.12)"/>' +
+        '<path d="M272 290 Q272 310 290 312 H430 Q448 310 448 290 Z" fill="#d79b52" stroke="#2b1d12" stroke-width="4"/>' +
+        '<rect x="266" y="262" width="188" height="30" rx="14" fill="#6b3a1f" stroke="#2b1d12" stroke-width="4"/>' +
+        '<path d="M268 262 L300 278 L330 258 L362 280 L394 258 L424 278 L452 260 L452 256 L268 256 Z" fill="#ffc93c" stroke="#2b1d12" stroke-width="3"/>' +
+        '<path d="M262 252 Q270 236 290 248 Q310 232 330 248 Q350 234 370 248 Q390 232 410 248 Q430 234 450 248 Q462 240 458 256 H262 Z" fill="#6fbf4a" stroke="#2b1d12" stroke-width="3"/>' +
+        '<path d="M266 248 Q266 150 360 148 Q454 150 454 248 Z" fill="#e0a458" stroke="#2b1d12" stroke-width="4"/>' +
+        '<g fill="#fff6dc"><ellipse cx="320" cy="176" rx="6" ry="3"/><ellipse cx="370" cy="166" rx="6" ry="3"/><ellipse cx="412" cy="186" rx="6" ry="3"/><ellipse cx="340" cy="210" rx="6" ry="3"/></g>' +
+        '<circle cx="334" cy="212" r="20" fill="#fff" stroke="#2b1d12" stroke-width="3"/><circle cx="388" cy="212" r="20" fill="#fff" stroke="#2b1d12" stroke-width="3"/>' +
+        '<circle cx="330" cy="216" r="9" fill="#1b130c"/><circle cx="392" cy="218" r="9" fill="#1b130c"/>' +
+        '<path d="M312 186 L350 196" stroke="#2b1d12" stroke-width="7" stroke-linecap="round"/><path d="M410 186 L372 196" stroke="#2b1d12" stroke-width="7" stroke-linecap="round"/>' +
+        '<path d="M344 238 Q362 228 378 238" stroke="#2b1d12" stroke-width="4" fill="none" stroke-linecap="round"/></g>' +
+        '<g class="pow"><path d="M300 200 L312 222 L338 214 L322 236 L344 252 L316 254 L314 280 L298 260 L276 274 L284 250 L260 240 L286 232 L276 210 Z" fill="#ffd36a" stroke="#d23a2a" stroke-width="4"/></g>' +
+        '<g class="fist"><rect x="-60" y="214" width="240" height="44" rx="10" fill="#d23a2a" stroke="#2b1d12" stroke-width="4"/>' +
+        '<rect x="160" y="196" width="104" height="82" rx="26" fill="#fffaf0" stroke="#2b1d12" stroke-width="4"/>' +
+        '<path d="M238 200 V222 M238 236 V254 M238 268 V276" stroke="#2b1d12" stroke-width="3" stroke-linecap="round"/>' +
+        '<rect x="168" y="236" width="56" height="24" rx="12" fill="#f3e2c2" stroke="#2b1d12" stroke-width="4"/>' +
+        '<path d="M60 214 V258 M100 214 V258" stroke="#ffd36a" stroke-width="6"/></g>' +
+      '</g>' +
+      // the rest of the Horde: fries and a milkshake, waiting their turn
+      '<g transform="translate(905 196)"><g class="foe"><ellipse cx="34" cy="86" rx="34" ry="6" fill="rgba(0,0,0,.12)"/>' +
+        '<g stroke="#2b1d12" stroke-width="3"><rect x="10" y="0" width="9" height="40" fill="#ffd36a"/><rect x="22" y="-8" width="9" height="46" fill="#ffd36a"/><rect x="34" y="-4" width="9" height="44" fill="#ffd36a"/><rect x="46" y="2" width="9" height="38" fill="#ffd36a"/></g>' +
+        '<path d="M2 30 H66 L58 84 H10 Z" fill="#d23a2a" stroke="#2b1d12" stroke-width="3.5"/>' +
+        '<circle cx="24" cy="52" r="7" fill="#fff" stroke="#2b1d12" stroke-width="2"/><circle cx="44" cy="52" r="7" fill="#fff" stroke="#2b1d12" stroke-width="2"/>' +
+        '<circle cx="25" cy="54" r="3" fill="#1b130c"/><circle cx="43" cy="54" r="3" fill="#1b130c"/><path d="M16 42 L30 46 M52 42 L38 46" stroke="#2b1d12" stroke-width="3.5" stroke-linecap="round"/></g></g>' +
+      '<g transform="translate(1010 176)"><g class="foe b"><ellipse cx="32" cy="106" rx="30" ry="6" fill="rgba(0,0,0,.12)"/>' +
+        '<path d="M40 -10 L48 -34" stroke="#d23a2a" stroke-width="5" stroke-linecap="round"/>' +
+        '<path d="M2 14 Q32 -8 62 14 Z" fill="#fff6dc" stroke="#2b1d12" stroke-width="3"/><circle cx="32" cy="-2" r="6" fill="#d23a2a" stroke="#2b1d12" stroke-width="2"/>' +
+        '<path d="M0 14 H64 L54 104 H10 Z" fill="#f2a7c0" stroke="#2b1d12" stroke-width="3.5"/>' +
+        '<circle cx="22" cy="46" r="7" fill="#fff" stroke="#2b1d12" stroke-width="2"/><circle cx="42" cy="46" r="7" fill="#fff" stroke="#2b1d12" stroke-width="2"/>' +
+        '<circle cx="23" cy="48" r="3" fill="#1b130c"/><circle cx="41" cy="48" r="3" fill="#1b130c"/><path d="M24 66 Q32 60 40 66" stroke="#2b1d12" stroke-width="3" fill="none"/></g></g>' +
+      // Pickles and Sir Broccolot, cheering from the hill
+      '<g transform="translate(150 222)"><ellipse cx="34" cy="58" rx="30" ry="6" fill="rgba(0,0,0,.12)"/><rect x="10" y="0" width="48" height="60" rx="24" fill="#6f9a3a" stroke="#2b1d12" stroke-width="3"/>' +
+        '<g fill="#8fbf55"><circle cx="22" cy="18" r="3"/><circle cx="44" cy="34" r="3"/><circle cx="24" cy="46" r="3"/></g>' +
+        '<circle cx="26" cy="22" r="8" fill="#fff" stroke="#2b1d12" stroke-width="2"/><circle cx="44" cy="22" r="8" fill="#fff" stroke="#2b1d12" stroke-width="2"/>' +
+        '<circle cx="28" cy="24" r="3.5" fill="#1b130c"/><circle cx="46" cy="24" r="3.5" fill="#1b130c"/><path d="M28 40 Q35 36 42 40" stroke="#2b1d12" stroke-width="2.5" fill="none"/></g>' +
+      '<g transform="translate(236 236)"><ellipse cx="30" cy="54" rx="24" ry="5" fill="rgba(0,0,0,.12)"/><rect x="22" y="26" width="16" height="28" rx="5" fill="#9cc27a" stroke="#2b1d12" stroke-width="3"/>' +
+        '<g fill="#3f8f3a" stroke="#2b1d12" stroke-width="3"><circle cx="18" cy="20" r="13"/><circle cx="42" cy="20" r="13"/><circle cx="30" cy="8" r="14"/></g>' +
+        '<circle cx="25" cy="20" r="5" fill="#fff" stroke="#2b1d12" stroke-width="1.5"/><circle cx="36" cy="20" r="5" fill="#fff" stroke="#2b1d12" stroke-width="1.5"/>' +
+        '<circle cx="26" cy="21" r="2" fill="#1b130c"/><circle cx="37" cy="21" r="2" fill="#1b130c"/>' +
+        '<path d="M44 40 L66 14" stroke="#8f9aa6" stroke-width="4" stroke-linecap="round"/><path d="M42 36 L50 44" stroke="#c48d26" stroke-width="4" stroke-linecap="round"/></g>' +
+      '</svg></div>';
   }
 
   UI.page('landing', { title: 'Punch the fast food, save the realm' }, function (view, ctx) {
@@ -1527,13 +1533,13 @@
       : '<a class="ui-btn primary lg" href="#auth/signup" data-go="auth/signup">' + esc(C.cta) + ' ' + UI.icon('arrow') + '</a>' +
         '<a class="ui-btn gold lg" href="#play/training" data-go="play/training">🥊 Try the Training Yard</a>';
     view.innerHTML =
-      '<section class="lp-hero"><div class="ui-wrap"><div>' +
-        '<div class="eyebrow">' + esc(C.eyebrow) + '</div><h1>' + C.title + '</h1><p class="lp-lead">' + esc(C.lead) + '</p>' +
+      '<section class="lp-hero lp-title"><span class="cloud" style="top:92px;width:120px;animation-delay:-6s"></span><span class="cloud" style="top:26px;width:80px;animation-delay:-19s"></span>' +
+        '<div class="ui-wrap"><div class="eyebrow">' + esc(C.eyebrow) + '</div><h1>' + C.title + '</h1><p class="lp-lead">' + esc(C.lead) + '</p>' +
         '<div class="lp-cta">' + primary + '</div>' +
         '<div class="lp-proof">' + C.proof.map(function (p) { return '<span>' + UI.icon('check') + esc(p) + '</span>'; }).join('') + '</div>' +
-        (me ? '' : '<p class="small muted" style="margin-top:10px">The Training Yard needs no account. Sign up when you want your progress saved.</p>') +
-      '</div>' + heroArt() + '</div></section>' +
-      '<section class="lp-section" style="padding-top:12px"><div class="ui-wrap"><div class="ui-card ornate"><div class="lp-realm" data-realm>' +
+        (me ? '' : '<p class="lp-note">The Training Yard needs no account. Sign up when you want your progress saved.</p>') +
+        '</div>' + heroArt() +
+        '<div class="lp-hud"><div class="ui-wrap"><div class="lp-realm" data-realm>' +
         ['Heroes', 'Snacks punched', 'Villagers freed', 'Kcal burned'].map(function (l) { return '<div><b>–</b><span>' + l + '</span></div>'; }).join('') + '</div></div></div></section>' +
       '<section class="lp-section" id="how"><div class="ui-wrap"><div class="lp-head"><h2>How it works</h2><p>Think rhythm boxing meets a fantasy quest. The snacks arrive on the beat, and the story carries you through ten lands.</p></div>' +
         '<div class="lp-steps">' + C.steps.map(function (s, i) { return '<div class="ui-card lp-step"><span class="ui-seal ' + ['green', '', 'gold'][i] + '">' + s[0] + '</span><h3>' + esc(s[1]) + '</h3><p class="muted">' + esc(s[2]) + '</p></div>'; }).join('') + '</div></div></section>' +
