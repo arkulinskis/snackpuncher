@@ -302,7 +302,7 @@ native_deps:
     })();\n</script>\n\n<!-- Prepsto feedback panel: every \"Submit feedback\" link and button opens it (it is the only feedback\
     \ channel). No floating button, no cookies, nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->\n\
     <script src=\"https://prepsto.com/_/theme/widget.js\" data-prepsto=\"j9t8eqs\" data-button=\"false\" data-label=\"Submit\
-    \ feedback\" async></script>\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=e804f1bb32\">\n<script src=\"_/theme/app.js?v=258a15f839\"\
+    \ feedback\" async></script>\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=e74b49ab85\">\n<script src=\"_/theme/app.js?v=d3cc75eb81\"\
     ></script>\n"
 package_name: Snackpuncher
 runtime_options:
