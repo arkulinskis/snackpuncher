@@ -1,0 +1,10 @@
+<section class="sc-cat">
+  <div class="sc-cat-head">
+    <span class="ui-seal" anvil:name="seal" aria-hidden="true"><anvil-component type="Label" name="emoji" bind:text="self.item['emoji']"></anvil-component></span>
+    <div class="sc-cat-title"><h2><anvil-component type="Label" name="name" bind:text="self.item['name']"></anvil-component></h2><anvil-component type="Label" name="blurb" prop:role='["fine-print"]' bind:text="self.item['blurb']"></anvil-component></div>
+    <anvil-component type="Label" name="status" prop:role='["badge"]'></anvil-component>
+  </div>
+  <div class="sc-grid">
+    <anvil-component type="RepeatingPanel" name="items_panel" prop:item_template="Snackpuncher.Items.Treasure" prop:role='["contents"]'></anvil-component>
+  </div>
+</section>

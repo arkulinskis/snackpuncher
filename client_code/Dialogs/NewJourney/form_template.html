@@ -1,0 +1,14 @@
+<div class="ui">
+  <h2 class="dlg-h">Start a new journey?</h2>
+  <p class="muted">Your territories, treasures, villagers, upgrades and sprouts go back to zero. Your workout log stays. This can't be undone.</p>
+  <div class="ui-stack">
+    <label class="ui-field"><span>Type <b>NEW JOURNEY</b> to confirm</span>
+      <anvil-component type="TextBox" name="confirm_box"></anvil-component>
+    </label>
+    <anvil-component type="Label" name="message" prop:role='["msg-error"]' prop:visible="false"></anvil-component>
+    <div class="ui-row end">
+      <anvil-component type="Button" name="cancel_button" prop:text="Cancel" prop:role='["btn", "btn-ghost"]'></anvil-component>
+      <anvil-component type="Button" name="reset_button" prop:text="Start over" prop:role='["btn", "btn-danger", "btn-solid"]'></anvil-component>
+    </div>
+  </div>
+</div>

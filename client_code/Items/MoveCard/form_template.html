@@ -1,0 +1,8 @@
+<div class="ui-card lp-move">
+  <span class="em" aria-hidden="true"><anvil-component type="Label" name="icon" bind:text="self.item['icon']"></anvil-component></span>
+  <h3><anvil-component type="Label" name="name" bind:text="self.item['name']"></anvil-component></h3>
+  <p><anvil-component type="Label" name="how" bind:text="self.item['how']"></anvil-component></p>
+  <div class="mus">
+    <anvil-component type="RepeatingPanel" name="muscles_panel" prop:item_template="Snackpuncher.Items.Badge" prop:role='["contents"]'></anvil-component>
+  </div>
+</div>

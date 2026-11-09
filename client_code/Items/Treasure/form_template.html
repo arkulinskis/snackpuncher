@@ -1,0 +1,7 @@
+<div>
+<button type="button" class="sc-item" anvil:name="pick" anvil:on-dom:click="self.pick_click">
+  <span class="em" aria-hidden="true"><anvil-component type="Label" name="emoji" bind:text="self.item['emoji']"></anvil-component></span>
+  <anvil-component type="Label" name="name" prop:role='["sc-name"]' bind:text="self.item['name']"></anvil-component>
+  <anvil-component type="Label" name="land" prop:role='["sc-land"]' bind:text="self.item['land']"></anvil-component>
+</button>
+</div>

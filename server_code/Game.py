@@ -374,8 +374,8 @@ def workout_stats():
         streak += 1
         d -= dt.timedelta(days=1)
     tot_mus = sum(mus.values()) or 1.0
-    shares = {k: round(v / tot_mus, 3) for k, v in mus.items()}
-    low = min(shares, key=shares.get) if rows else None
+    shares: dict = {k: round(v / tot_mus, 3) for k, v in mus.items()}
+    low = min(shares, key=lambda k: shares[k]) if rows else None
     tip = None
     if low:
         best = {"legs": "frost", "core": "storm", "chest": "salt", "back": "cheddar", "arms": "ember", "shoulders": "meadow"}[low]

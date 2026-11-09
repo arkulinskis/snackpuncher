@@ -8,7 +8,7 @@ Change names and text freely; don't rename ids once players have progress.
 # ------------------------------------------------------------------------------------------- moves + muscles
 MUSCLES = [("shoulders", "Shoulders"), ("arms", "Arms"), ("chest", "Chest"), ("back", "Back"), ("core", "Core"), ("legs", "Legs")]
 
-MOVES = {
+MOVES: dict = {
     "jab": {"name": "Jab", "icon": "👊", "muscles": {"shoulders": .5, "arms": .3, "core": .2},
             "how": "Punch straight through the snack. Snap it back to your guard."},
     "hook": {"name": "Hook", "icon": "🪝", "muscles": {"chest": .45, "core": .35, "shoulders": .2},
@@ -29,7 +29,7 @@ MOVES = {
                "how": "Punch the cage as fast as you can to free the villager."},
 }
 
-INTENSITY = {  # chart density, snack speed (lead seconds), punch speed needed, MET for the calorie estimate
+INTENSITY: dict = {  # chart density, snack speed (lead seconds), punch speed needed, MET for the calorie estimate
     "gentle": {"name": "Gentle", "density": .55, "lead": 2.3, "speed": 1.0, "met": 5.0, "boss_hp": .6},
     "steady": {"name": "Steady", "density": .8, "lead": 1.9, "speed": 1.35, "met": 7.0, "boss_hp": .7},
     "beast": {"name": "Beast", "density": 1.0, "lead": 1.55, "speed": 1.7, "met": 9.0, "boss_hp": .8},
@@ -63,7 +63,7 @@ CAT_KEYS = [c["key"] for c in CATEGORIES]
 # ------------------------------------------------------------------------------------------- the ten lands
 # Each land: territories 1-4 rescue a villager; 5 is the boss. Items: one per category, in CAT_KEYS order
 # (name, emoji, type, flavour). Territory n gives CAT_KEYS[2n-2] on first clear and CAT_KEYS[2n-1] at 3 stars.
-LANDS = [
+LANDS: list = [
     {"key": "meadow", "name": "Meadowmere", "element": "Earth", "emoji": "🌾", "bpm": 96,
      "blurb": "Rolling green fields where fries now grow in rows. A gentle start: jabs, ducks and leans.",
      "sky": ["#8ec9e8", "#fdf0cf"], "ground": "#7fa65a", "path": "#e7d5a5", "accent": "#e8b93a", "fog": "#e9f1dc",

@@ -1,0 +1,12 @@
+---
+custom_component: true
+properties: []
+toolbox_item:
+  title: Battle screen
+  group: Snackpuncher
+help_text: |
+  The battle engine (theme/assets/sp-play.js: three.js + WebXR + flat-screen controls, results, in-headset cards),
+  mounted with UI.mountScreen('play', element, [territory]) when the component appears and destroyed (XR session
+  ended, loop stopped, listeners removed) when it leaves. Call mount(args) with the address parts first.
+---
+<div class="sp-battle-host"><div anvil:dom-node="host"></div></div>
