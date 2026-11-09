@@ -1,0 +1,56 @@
+<anvil-form layout="Snackpuncher.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <div class="ui-page-head">
+        <div><h1>Hearthstead</h1><p class="muted">Your village: everyone you free comes to live here.</p></div>
+        <anvil-component type="Label" name="sprouts" prop:role='["sp-sprouts"]' prop:tooltip="Sprouts"></anvil-component>
+      </div>
+
+      <div class="vl-scene" aria-hidden="true">
+        <anvil-component type="Label" name="sun" prop:role='["vl-sun"]'></anvil-component>
+        <div class="hill h1"></div><div class="hill h2"></div>
+        <div class="row"><anvil-component type="RepeatingPanel" name="houses_panel" prop:item_template="Snackpuncher.Items.Emoji" prop:role='["contents"]'></anvil-component></div>
+        <div class="row people"><anvil-component type="RepeatingPanel" name="people_panel" prop:item_template="Snackpuncher.Items.Emoji" prop:role='["contents"]'></anvil-component></div>
+      </div>
+
+      <div class="vl-level">
+        <div>
+          <anvil-component type="Label" name="level_name" prop:role='["vl-level-name"]'></anvil-component>
+          <anvil-component type="Label" name="level_count" prop:role='["fine-print"]'></anvil-component>
+        </div>
+        <div class="ui-meter gold" anvil:name="level_meter" role="img"><i anvil:name="level_bar"></i></div>
+        <anvil-component type="Label" name="level_next" prop:role='["fine-print"]'></anvil-component>
+        <span class="ui-badge gold" anvil:name="level_done">Complete!</span>
+      </div>
+
+      <div class="vl-shops">
+        <section class="ui-card vl-shop">
+          <h2><span aria-hidden="true">🥒</span>Pickles' Market</h2>
+          <p class="muted">"Everything's fresh. Mostly. Don't ask about the jar."</p>
+          <div class="vl-ups"><anvil-component type="RepeatingPanel" name="market_panel" prop:item_template="Snackpuncher.Items.Upgrade" prop:role='["contents"]'></anvil-component></div>
+        </section>
+        <section class="ui-card vl-shop">
+          <h2><span aria-hidden="true">⚒️</span>Granny's Forge</h2>
+          <div anvil:name="forge_open">
+            <p class="muted">"Bring me sprouts, I'll bring you fists of legend."</p>
+            <div class="vl-ups"><anvil-component type="RepeatingPanel" name="forge_panel" prop:item_template="Snackpuncher.Items.Upgrade" prop:role='["contents"]'></anvil-component></div>
+          </div>
+          <div class="vl-cold" anvil:name="forge_cold">
+            <div class="em" aria-hidden="true">🧊</div>
+            <h3>The forge is cold</h3>
+            <p>Free Granny Marrow from the Behemoth's Freezer in Frostfjord, and she'll forge you gauntlets, guards and charms.</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="ui-card vl-trims">
+        <h2>🥊 Glove trims</h2>
+        <p class="muted">Finish a whole collection in your Satchel to unlock its trim. Your gloves stay green (left) and red (right) so you can read the targets.</p>
+        <div class="vl-skins"><anvil-component type="RepeatingPanel" name="skins_panel" prop:item_template="Snackpuncher.Items.Skin" prop:role='["contents"]'></anvil-component></div>
+      </section>
+
+      <h2 class="ui-divider">The villagers</h2>
+      <div class="vl-people"><anvil-component type="RepeatingPanel" name="people_list" prop:item_template="Snackpuncher.Items.Villager" prop:role='["contents"]'></anvil-component></div>
+    </div>
+  </anvil-block>
+</anvil-form>

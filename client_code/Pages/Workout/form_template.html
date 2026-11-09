@@ -1,0 +1,82 @@
+<anvil-form layout="Snackpuncher.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <div class="ui-page-head">
+        <div><h1>Your workout</h1><p class="muted">The fitness ledger: every battle is exercise. Here's what you've put in.</p></div>
+        <anvil-component type="Label" name="streak" prop:role='["sp-chip", "wk-streak"]'></anvil-component>
+      </div>
+
+      <div class="wk-tiles">
+        <div class="ui-card wk-tile"><anvil-component type="Label" name="t_minutes" prop:role='["wk-num"]'></anvil-component><span>minutes</span></div>
+        <div class="ui-card wk-tile"><anvil-component type="Label" name="t_kcal" prop:role='["wk-num"]'></anvil-component><span>kcal (est.)</span></div>
+        <div class="ui-card wk-tile"><anvil-component type="Label" name="t_battles" prop:role='["wk-num"]'></anvil-component><span>battles</span></div>
+        <div class="ui-card wk-tile"><anvil-component type="Label" name="t_punches" prop:role='["wk-num"]'></anvil-component><span>punches</span></div>
+        <div class="ui-card wk-tile"><anvil-component type="Label" name="t_stars" prop:role='["wk-num"]'></anvil-component><span>stars earned</span></div>
+      </div>
+
+      <div class="wk-two">
+        <section class="ui-card">
+          <h3>Minutes per day</h3>
+          <p class="muted small wk-sub">The last 14 days.</p>
+          <div class="wk-chart" role="img" aria-label="Minutes played per day over the last 14 days">
+            <anvil-component type="RepeatingPanel" name="days_panel" prop:item_template="Snackpuncher.Items.DayBar" prop:role='["contents"]'></anvil-component>
+          </div>
+          <div class="wk-days" aria-hidden="true"><anvil-component type="RepeatingPanel" name="dow_panel" prop:item_template="Snackpuncher.Items.Emoji" prop:role='["contents"]'></anvil-component></div>
+          <anvil-component type="Label" name="days_sr" prop:role='["sr"]'></anvil-component>
+        </section>
+        <section class="ui-card">
+          <h3>Muscle balance</h3>
+          <p class="muted small wk-sub">Share of the work each muscle group has done, from every move you've made.</p>
+          <div class="wk-mus"><anvil-component type="RepeatingPanel" name="muscles_panel" prop:item_template="Snackpuncher.Items.MuscleRow" prop:role='["contents"]'></anvil-component></div>
+          <anvil-component type="Label" name="tip" prop:role='["msg-note", "wk-tipbox"]'></anvil-component>
+        </section>
+      </div>
+
+      <div class="wk-two">
+        <section class="ui-card">
+          <h3>Moves so far</h3>
+          <div class="wk-moves">
+            <anvil-component type="RepeatingPanel" name="moves_panel" prop:item_template="Snackpuncher.Items.Chip" prop:role='["contents"]'></anvil-component>
+            <span class="muted" anvil:name="no_moves">Nothing yet: go and punch something!</span>
+          </div>
+          <h3 class="wk-h-recent">Recent battles</h3>
+          <div class="wk-recent">
+            <anvil-component type="RepeatingPanel" name="recent_panel" prop:item_template="Snackpuncher.Items.BattleRow" prop:role='["contents"]'></anvil-component>
+            <div class="ui-empty wk-empty" anvil:name="no_recent">No battles yet. Start with the Training Yard.</div>
+          </div>
+        </section>
+        <section class="ui-card">
+          <h3>Battle settings</h3>
+          <div class="wk-set">
+            <div>
+              <span class="small muted wk-label" id="wk-int-label">Intensity</span>
+              <div class="ui-seg wk-int" role="group" aria-labelledby="wk-int-label">
+                <anvil-component type="Button" name="i_gentle" prop:text="🌿 Gentle" prop:role='["seg"]'></anvil-component>
+                <anvil-component type="Button" name="i_steady" prop:text="🔥 Steady" prop:role='["seg"]'></anvil-component>
+                <anvil-component type="Button" name="i_beast" prop:text="🐗 Beast" prop:role='["seg"]'></anvil-component>
+              </div>
+              <p class="ui-hint">Gentle: slower snacks, softer punches count. Beast: fast, dense, punch hard.</p>
+            </div>
+            <div class="wk-check">
+              <anvil-component type="CheckBox" name="seated_box" prop:text="Seated mode"></anvil-component>
+              <span class="small muted">No ducks or lunges. Great for a chair or a sore knee.</span>
+            </div>
+            <div class="wk-check">
+              <anvil-component type="CheckBox" name="nofail_box" prop:text="No-fail"></anvil-component>
+              <span class="small muted">Vigor never runs out. You still need half the hits to free a territory.</span>
+            </div>
+            <label class="ui-field"><span>Body weight <em>(optional, kg: only for the calorie estimate)</em></span>
+              <anvil-component type="TextBox" name="weight_box" prop:type="number" prop:placeholder="70"></anvil-component>
+            </label>
+            <label class="wk-range"><span>🎵 Music</span><input type="range" min="0" max="1" step="0.05" anvil:dom-node="music"><anvil-component type="Label" name="music_val"></anvil-component></label>
+            <label class="wk-range"><span>💥 Effects</span><input type="range" min="0" max="1" step="0.05" anvil:dom-node="sfx"><anvil-component type="Label" name="sfx_val"></anvil-component></label>
+            <anvil-component type="Button" name="save_button" prop:text="Save settings" prop:role='["btn", "btn-primary"]'></anvil-component>
+          </div>
+          <h2 class="ui-divider">Start over</h2>
+          <p class="muted small">Begin a brand-new journey from Meadowmere. Your workout log and settings stay; your progress, treasures and sprouts start again.</p>
+          <anvil-component type="Button" name="reset_button" prop:text="Start a new journey…" prop:role='["btn", "btn-sm", "btn-danger"]'></anvil-component>
+        </section>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

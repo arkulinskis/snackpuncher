@@ -1,0 +1,16 @@
+---
+custom_component: true
+properties: []
+events:
+  - name: land_picked
+    description: A land on the map was clicked or chosen with the keyboard
+    parameters:
+      - name: key
+toolbox_item:
+  title: Map of Nourra
+  group: Snackpuncher
+help_text: |
+  The illustrated map of the ten lands (an SVG drawing): a dotted road, one round node per land with its stars,
+  locked lands under clouds. Call draw(content, progress, selected_land_key); clicking a land raises land_picked.
+---
+<div class="jr-map-host"><div anvil:dom-node="host"></div></div>

@@ -1,0 +1,77 @@
+<anvil-form layout="Snackpuncher.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <div class="ui-page-head">
+        <div>
+          <anvil-component type="Label" name="title" prop:role='["page-title"]'></anvil-component>
+          <p class="muted">The realm of Nourra, one territory at a time.</p>
+        </div>
+        <div class="jr-top">
+          <anvil-component type="Label" name="sprouts" prop:role='["sp-sprouts"]' prop:tooltip="Sprouts"></anvil-component>
+          <anvil-component type="Label" name="c_stars" prop:role='["sp-chip"]'></anvil-component>
+          <anvil-component type="Label" name="c_items" prop:role='["sp-chip"]'></anvil-component>
+          <anvil-component type="Label" name="c_people" prop:role='["sp-chip"]'></anvil-component>
+        </div>
+      </div>
+
+      <section class="ui-card ornate jr-quest">
+        <div>
+          <h2 class="jr-quest-title"><anvil-component type="Label" name="objective"></anvil-component></h2>
+          <div class="jr-party">
+            <anvil-component type="Label" name="who_emoji" prop:role='["sp-portrait"]'></anvil-component>
+            <div class="sp-bubble"><anvil-component type="Label" name="who_name" prop:role='["sp-who"]'></anvil-component><anvil-component type="Label" name="who_line"></anvil-component></div>
+          </div>
+          <div class="jr-keys" anvil:name="keys_box">
+            <anvil-component type="RepeatingPanel" name="keys_panel" prop:item_template="Snackpuncher.Items.Chip" prop:role='["contents"]'></anvil-component>
+          </div>
+        </div>
+        <div><a class="ui-btn gold lg" anvil:name="quest_go" href="#play/training"><anvil-component type="Label" name="quest_go_text"></anvil-component></a></div>
+      </section>
+
+      <div class="jr-map">
+        <anvil-component type="Snackpuncher.Components.LandMap" name="land_map"></anvil-component>
+      </div>
+
+      <section class="ui-card jr-land" anvil:name="land_card">
+        <div class="jr-land-head">
+          <anvil-component type="Label" name="land_emoji" prop:role='["jr-em"]'></anvil-component>
+          <div class="jr-land-title">
+            <h2><anvil-component type="Label" name="land_name"></anvil-component></h2>
+            <anvil-component type="Label" name="land_meta" prop:role='["fine-print"]'></anvil-component>
+          </div>
+          <div class="pl-moves">
+            <anvil-component type="RepeatingPanel" name="moves_panel" prop:item_template="Snackpuncher.Items.Chip" prop:role='["contents"]'></anvil-component>
+          </div>
+        </div>
+        <anvil-component type="Label" name="land_blurb" prop:role='["jr-blurb"]'></anvil-component>
+        <div class="jr-terrs" anvil:name="terrs_box">
+          <anvil-component type="RepeatingPanel" name="terrs_panel" prop:item_template="Snackpuncher.Items.TerritoryRow" prop:role='["contents"]'></anvil-component>
+        </div>
+        <div class="ui-empty jr-shroud" anvil:name="shroud">
+          <div class="jr-shroud-em" aria-hidden="true">☁️</div>
+          <h3>Shrouded in grease</h3>
+          <anvil-component type="Label" name="shroud_text"></anvil-component>
+        </div>
+      </section>
+
+      <div class="jr-side">
+        <div class="ui-card">
+          <h3>🥊 The Training Yard</h3>
+          <p class="muted">Sir Broccolot teaches every move, one at a time. Good as a warm-up any day.</p>
+          <a class="ui-btn" href="#play/training">Train</a>
+        </div>
+        <div class="ui-card">
+          <h3>🏘️ Hearthstead</h3>
+          <anvil-component type="Label" name="village_text" prop:role='["jr-blurb"]'></anvil-component>
+          <a class="ui-btn" href="#village">Visit the village</a>
+        </div>
+      </div>
+
+      <h2 class="ui-divider">The Chronicle</h2>
+      <div class="jr-chron">
+        <anvil-component type="RepeatingPanel" name="scenes_panel" prop:item_template="Snackpuncher.Items.SceneCard" prop:role='["contents"]'></anvil-component>
+        <p class="muted jr-chron-empty" anvil:name="no_scenes">The story begins in Meadowmere. Every scene you see is kept here.</p>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

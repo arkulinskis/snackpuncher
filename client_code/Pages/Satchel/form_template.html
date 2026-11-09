@@ -1,0 +1,24 @@
+<anvil-form layout="Snackpuncher.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap">
+      <div class="ui-page-head">
+        <div>
+          <h1>Treasures of Nourra</h1>
+          <p class="muted">Your satchel: one treasure for freeing a territory, another for three stars. A full collection unlocks a glove trim.</p>
+        </div>
+      </div>
+      <div class="sc-head">
+        <anvil-component type="Label" name="total" prop:role='["sc-total"]'></anvil-component>
+        <div class="ui-meter gold" anvil:name="total_meter" role="img"><i anvil:name="total_bar"></i></div>
+      </div>
+      <div anvil:name="keys_part">
+        <h2 class="ui-divider">Quest items</h2>
+        <div class="sc-keys"><anvil-component type="RepeatingPanel" name="keys_panel" prop:item_template="Snackpuncher.Items.Chip" prop:role='["contents"]'></anvil-component></div>
+      </div>
+      <div class="sc-cats" role="group" aria-label="Collections">
+        <anvil-component type="RepeatingPanel" name="cats_panel" prop:item_template="Snackpuncher.Items.CatButton" prop:role='["contents"]'></anvil-component>
+      </div>
+      <anvil-component type="RepeatingPanel" name="sections_panel" prop:item_template="Snackpuncher.Items.CategorySection" prop:role='["contents"]'></anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

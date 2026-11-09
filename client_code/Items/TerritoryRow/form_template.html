@@ -1,0 +1,17 @@
+<div class="jr-terr">
+  <span class="ui-seal" anvil:name="seal" aria-hidden="true"><anvil-component type="Label" name="seal_text"></anvil-component></span>
+  <div>
+    <h3><anvil-component type="Label" name="name" ></anvil-component> <span class="ui-badge gold" anvil:name="bounty">🎯 Bounty</span></h3>
+    <div class="meta">
+      <anvil-component type="Label" name="stars" prop:role='["sp-stars"]'></anvil-component>
+      <anvil-component type="Label" name="boss"></anvil-component>
+      <anvil-component type="Label" name="villager"></anvil-component>
+      <span class="loot"><anvil-component type="RepeatingPanel" name="loot_panel" prop:item_template="Snackpuncher.Items.Loot" prop:role='["contents"]'></anvil-component></span>
+      <anvil-component type="Label" name="best"></anvil-component>
+    </div>
+  </div>
+  <div class="act">
+    <a class="ui-btn" anvil:name="fight" href="#play/training"><anvil-component type="Label" name="fight_text"></anvil-component></a>
+    <span class="ui-badge" anvil:name="locked">🔒 Free the one before</span>
+  </div>
+</div>
