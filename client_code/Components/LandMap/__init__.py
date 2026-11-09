@@ -57,5 +57,5 @@ class LandMap(LandMapTemplate):
         self._pick(event)
 
     def _key(self, event):
-        if event.key in ("Enter", " ") and self._pick(event):
+        if getattr(event, "key", None) in ("Enter", " ") and self._pick(event):
             event.preventDefault()
