@@ -281,19 +281,19 @@ native_deps:
     \ ten lands. Every battle is a workout. Also plays on screens.\", \"image\": \"https://snackpuncher.anvil.app/_/theme/og-image.png\"\
     , \"inLanguage\": \"en\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"}, \"keywords\": \"VR workout game, Meta\
     \ Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest passthrough game,\
-    \ no install VR game\", \"applicationCategory\": \"GameApplication\", \"operatingSystem\": \"Any (web browser)\", \"browserRequirements\"\
-    : \"Requires JavaScript and a modern web browser\", \"featureList\": [\"Ten lands, 41 villagers to free and 100 treasures\"\
-    , \"Plays in the Meta Quest Browser with no install, plus a passthrough mode\", \"Also playable on a normal screen with\
-    \ mouse, touch or keyboard\", \"Moves that rotate between muscle groups, with a workout ledger\", \"A Training Yard that\
-    \ teaches every move, playable as a guest\"], \"audience\": {\"@type\": \"Audience\", \"audienceType\": \"Meta Quest and\
-    \ WebXR players who want a workout that feels like a quest\"}}, {\"@type\": \"WebSite\", \"@id\": \"https://snackpuncher.anvil.app/#site\"\
-    , \"url\": \"https://snackpuncher.anvil.app/\", \"name\": \"Snackpuncher\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"\
-    }}, {\"@type\": \"Organization\", \"@id\": \"https://arkvital.com/#org\", \"name\": \"Arkvital\", \"url\": \"https://arkvital.com\"\
-    , \"email\": \"arkvital@outlook.com\", \"address\": {\"@type\": \"PostalAddress\", \"addressLocality\": \"Montreal\",\
-    \ \"addressRegion\": \"QC\", \"addressCountry\": \"CA\"}}]}</script>\n<!-- seo:end -->\n<meta name=\"viewport\" content=\"\
-    width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#2f6d3a\">\n<meta name=\"\
-    apple-mobile-web-app-capable\" content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link\
-    \ rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap\"\
+    \ no install VR game\", \"applicationCategory\": \"GameApplication\", \"operatingSystem\": \"Any (web browser)\", \"featureList\"\
+    : [\"Ten lands, 41 villagers to free and 100 treasures\", \"Plays in the Meta Quest Browser with no install, plus a passthrough\
+    \ mode\", \"Also playable on a normal screen with mouse, touch or keyboard\", \"Moves that rotate between muscle groups,\
+    \ with a workout ledger\", \"A Training Yard that teaches every move, playable as a guest\"], \"audience\": {\"@type\"\
+    : \"Audience\", \"audienceType\": \"Meta Quest and WebXR players who want a workout that feels like a quest\"}}, {\"@type\"\
+    : \"WebSite\", \"@id\": \"https://snackpuncher.anvil.app/#site\", \"url\": \"https://snackpuncher.anvil.app/\", \"name\"\
+    : \"Snackpuncher\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"}}, {\"@type\": \"Organization\", \"@id\": \"\
+    https://arkvital.com/#org\", \"name\": \"Arkvital\", \"url\": \"https://arkvital.com\", \"email\": \"arkvital@outlook.com\"\
+    , \"address\": {\"@type\": \"PostalAddress\", \"addressLocality\": \"Montreal\", \"addressRegion\": \"QC\", \"addressCountry\"\
+    : \"CA\"}}]}</script>\n<!-- seo:end -->\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\"\
+    >\n<meta name=\"theme-color\" content=\"#2f6d3a\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<link\
+    \ rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\"\
+    \ crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap\"\
     \ rel=\"stylesheet\">\n<link id=\"ui-favicon\" rel=\"icon\" type=\"image/svg+xml\" href=\"_/theme/icon.svg?v=f97bfcfd95\"\
     >\n<link rel=\"apple-touch-icon\" href=\"_/theme/icon-180.png?v=cec32f1f61\">\n<script>\n/* Keep our tab icon: Anvil adds\
     \ its own <link rel=\"icon\">, so drop any other icon link. */\n(function () {\n  function keep() {\n    var ours = document.getElementById('ui-favicon');\n\
