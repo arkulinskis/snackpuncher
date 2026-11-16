@@ -76,13 +76,13 @@
     // ---- the admin
     location.hash = '#auth'; await until(() => window.UI_READY && fields().length >= 2, 'sign-in form');
     const pw = 'Hb-local-admin-Kq7-2026';
-    type(fields()[0], 'arkulinskis@gmail.com'); type(fields()[1], pw);
+    type(fields()[0], 'admin@example.com'); type(fields()[1], pw);
     $$('.anvil-role-btn-block button').find((b) => /Sign in/.test(b.textContent)).click();
     await sleep(3500);
     if (!$('.ui-shell.signed-in')) {
       $$('.ui-seg button, .anvil-role-seg button').find((b) => /Create account/.test(b.textContent)).click();
       await sleep(600);
-      const i = fields(); type(i[0], 'Local Admin'); type(i[1], 'arkulinskis@gmail.com'); type(i[2], pw);
+      const i = fields(); type(i[0], 'Local Admin'); type(i[1], 'admin@example.com'); type(i[2], pw);
       const t2 = $('.au-card input[type=checkbox]'); if (t2 && !t2.checked) t2.click();
       $$('.anvil-role-btn-block button').find((b) => /Create account/.test(b.textContent)).click();
     }

@@ -45,7 +45,7 @@ gather Tidal Sea Salt, Storm Honey and Cheddar Iron so she can mend it, find Oli
 Olive (Grease Bog), fetch a Moonlemon to restore her voice (Gloomfry), wake the Ladle with her song and beat the
 Deep-Fried King (the Drive-Thru Citadel).
 
-**For admins** (`#admin`; arkulinskis@gmail.com becomes an admin on first sign-in):
+**For admins** (`#admin`; your admin email (App Secret `admin_emails`) becomes an admin on first sign-in):
 - **Overview:** people, players, battles, kcal, new feedback.
 - **Players:** everyone's journey at a glance (land reached, stars, treasures, villagers, battles, last played).
 - **Feedback inbox**, **Users** (make admin, disable), **Demo data** (five demo heroes at different stages, which feed
@@ -56,7 +56,7 @@ Deep-Fried King (the Drive-Thru Citadel).
 1. In the Anvil editor: **Create app → Clone from GitHub**, and paste `https://github.com/arkulinskis/snackpuncher`.
 2. **Users** service: email + password and "Continue with Google", sign-up allowed (already set in `anvil.yaml`; check it).
 3. Open the app in the editor. If it shows a **Schema Mismatch** alert, choose **"The schema of the source code is correct"** so Anvil creates the tables.
-4. **Run** it and sign up with **arkulinskis@gmail.com** straight away (that account becomes the admin).
+4. **Run** it and sign up with **your admin email** (App Secret `admin_emails`) straight away (that account becomes the admin).
 5. **Publish** (Publish → public URL, or your own domain). VR needs HTTPS, which Anvil provides.
 
 <!-- libraries:start -->
