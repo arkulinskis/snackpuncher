@@ -87,6 +87,34 @@ class Journey(JourneyTemplate):
         seen = [k for k in c["scenes"] if k in p["scenes"]]
         self.scenes_panel.items = [{"title": c["scenes"][k]["title"], "lines": sp.scene_lines(g, k)} for k in seen]
         self.no_scenes.visible = not seen
+        self._draw_run()
+
+    def _draw_run(self):
+        """The Workout run card: carry on with the run in progress, or start a new one (Dialogs/RunPicker)."""
+        run = sp.run()
+        live = bool(run) and int(run.get("i") or 0) < len(run.get("steps") or [])
+        self.run_go.visible = self.run_end.visible = live
+        self.run_start.visible = not live
+        if live:
+            steps, i = run["steps"], int(run["i"])
+            nxt = steps[i]
+            self.run_text.text = "Battle %d of %d is next: %s %s." % (i + 1, len(steps), nxt["emoji"], nxt["name"])
+            self.run_go_text.text = "▶ Carry on"
+            state.set_attr(self.run_go, "href", router.href("play", nxt["tid"]))
+        else:
+            self.run_text.text = ("Pick 10, 20 or 30 minutes. Battles from your journey chain back to back, with breathers "
+                                  "in between and a sweat break about every ten minutes.")
+
+    @handle("run_start", "click")
+    def run_start_click(self, **event_args):
+        from ...Dialogs.RunPicker import open_picker
+        open_picker()
+
+    @handle("run_end", "click")
+    def run_end_click(self, **event_args):
+        sp.end_run()
+        state.toast("Run ended. Every battle you fought is in your workout log.", "ok")
+        self._draw_run()
 
     def _row(self, t, L, p, c):
         vil = c["villagers"].get(t["villager"]) if t.get("villager") else None

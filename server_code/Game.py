@@ -118,7 +118,7 @@ def clean_stats(stats):
             except (TypeError, ValueError):
                 pass
     intensity = s.get("intensity") if s.get("intensity") in W.INTENSITY else "steady"
-    return {"total": total, "hits": hits, "weak": weak, "misses": total - hits - weak, "max_combo": num("max_combo", 0, total),
+    return {"follow": bool(s.get("follow")), "total": total, "hits": hits, "weak": weak, "misses": total - hits - weak, "max_combo": num("max_combo", 0, total),
             "score": num("score", 0, 10 ** 7), "seconds": num("seconds", 5, 1500), "flurry": num("flurry", 0, 400),
             "moves": moves, "failed": bool(s.get("failed")), "boss_down": bool(s.get("boss_down")), "intensity": intensity}
 
@@ -239,6 +239,8 @@ def finish_battle(tid, stats):
     if user is None:
         if tid != W.TRAINING:
             raise anvil.server.PermissionDenied("Please sign in to save your journey.")
+        if st["follow"]:
+            return C.ok(guest=True, follow=True, acc=0, cleared=False, stars=0, kcal=kcal_of(st, None), rewards=[], progress=None)
         acc, cleared, stars = grade(st, False)
         return C.ok(guest=True, acc=acc, cleared=cleared, stars=stars, kcal=kcal_of(st, None), rewards=[], progress=None)
     if C.rate_limited("battle", 240, 3600):
@@ -246,12 +248,26 @@ def finish_battle(tid, stats):
     save = _load(user)
     if not is_unlocked(save, tid):
         return C.fail("That territory is still held by the Horde. Clear the one before it first.")
+    if st["follow"]:
+        return _finish_follow(user, save, tid, st)
     rewards, g = apply_result(save, tid, st, user.get_id())
     _store(user, save)
     app_tables.battles.add_row(user=user, territory=tid, stars=g["stars"], score=st["score"], accuracy=g["acc"],
                                seconds=st["seconds"], kcal=g["kcal"], punches=g["punches"], moves=st["moves"],
                                intensity=st["intensity"], created=C.now(), is_demo=False)
     return C.ok(rewards=rewards, progress=public_progress(save, user.get_id()), **g)
+
+
+def _finish_follow(user, save, tid, st):
+    """Follow-along (no headset): the snacks played themselves while you shadowboxed. The minutes go into the
+    workout log (a battles row, intensity "follow", no stars); the save, unlocks, rewards and realm counters stay."""
+    kcal = kcal_of(st, save["settings"].get("weight"))
+    punches = sum(v for k, v in st["moves"].items() if k not in ("duck", "lean", "block")) + st["flurry"]
+    app_tables.battles.add_row(user=user, territory=tid, stars=0, score=0, accuracy=0.0, seconds=st["seconds"],
+                               kcal=kcal, punches=punches, moves=st["moves"], intensity="follow", created=C.now(),
+                               is_demo=False)
+    return C.ok(follow=True, acc=0, cleared=False, stars=0, kcal=kcal, punches=punches, rewards=[],
+                progress=public_progress(save, user.get_id()))
 
 
 @anvil.server.callable(require_user=True)
@@ -348,6 +364,17 @@ def _muscles(moves):
     return out
 
 
+TIP_LAND = {"legs": "frost", "core": "storm", "chest": "salt", "back": "cheddar", "arms": "ember", "shoulders": "meadow"}
+
+
+def _balance(mus, any_rows):
+    """Muscle shares (0-1) and the tip: the least-worked muscle and the land that works it most."""
+    tot_mus = sum(mus.values()) or 1.0
+    shares: dict = {k: round(v / tot_mus, 3) for k, v in mus.items()}
+    low = min(shares, key=lambda k: shares[k]) if any_rows else None
+    return shares, ({"muscle": low, "land": TIP_LAND[low]} if low else None)
+
+
 @anvil.server.callable(require_user=True)
 def workout_stats():
     """Your workout log: totals, the last 14 days, muscle balance, streak and recent sessions."""
@@ -373,13 +400,7 @@ def workout_stats():
     while d in played:
         streak += 1
         d -= dt.timedelta(days=1)
-    tot_mus = sum(mus.values()) or 1.0
-    shares: dict = {k: round(v / tot_mus, 3) for k, v in mus.items()}
-    low = min(shares, key=lambda k: shares[k]) if rows else None
-    tip = None
-    if low:
-        best = {"legs": "frost", "core": "storm", "chest": "salt", "back": "cheddar", "arms": "ember", "shoulders": "meadow"}[low]
-        tip = {"muscle": low, "land": best}
+    shares, tip = _balance(mus, bool(rows))
     return {
         "totals": {"battles": len(rows), "minutes": round(sum((r["seconds"] or 0) for r in rows) / 60.0, 1),
                    "kcal": round(sum((r["kcal"] or 0) for r in rows), 1), "punches": int(sum((r["punches"] or 0) for r in rows)),
@@ -389,6 +410,131 @@ def workout_stats():
         "recent": [{"territory": r["territory"], "stars": r["stars"], "score": r["score"], "accuracy": r["accuracy"],
                     "seconds": r["seconds"], "kcal": r["kcal"], "when": C.iso(r["created"]), "intensity": r["intensity"]} for r in rows[:12]],
     }
+
+
+# ------------------------------------------------------------------------------------------- workout runs
+RUN_MINUTES = (10, 20, 30)
+REST_SECONDS = 25     # "Breathe" between battles
+SWEAT_SECONDS = 45    # every ~10 minutes: lift the headset, wipe the face pad
+SWEAT_EVERY = 570
+
+
+def battle_seconds(tid):
+    """About how long a battle takes, count-in and cage flurry included (the same formula as SP.chart in sp.js)."""
+    if tid == W.TRAINING:
+        return 105
+    li, n = W.split_tid(tid)
+    secs = 72 + li * 7 + (n - 1) * 4 + (40 if n == 5 else 0)
+    return secs + (8 if tid in W.VILLAGERS else 2)
+
+
+def _run_pool(save, user_id, rows, day):
+    """Territories for a run, best first, as (tid, why): what you need next, today's bounty, then cleared
+    territories of the land that works your least-used muscle, then the rest of what you've cleared."""
+    pool = []
+    if not save.get("training"):
+        pool.append((W.TRAINING, "Learn every move"))
+    cur = current_tid(save)
+    if cur:
+        pool.append((cur, "Next on your journey"))
+    bounty = bounty_for(save, user_id, day)
+    if bounty and save.get("bounty_day") != day:
+        pool.append((bounty, "Today's bounty: double sprouts"))
+    cleared = [t for t in W.territory_ids() if stars_of(save, t) >= 1]
+    mus = {k: 0.0 for k, _ in W.MUSCLES}
+    for r in rows:
+        for k, v in _muscles(r["moves"]).items():
+            mus[k] += v
+    _, tip = _balance(mus, bool(rows))
+    if tip:
+        name = dict(W.MUSCLES)[tip["muscle"]]
+        pool += [(t, "%s day: they need it most" % name) for t in cleared if t.startswith(tip["land"] + "-")]
+    if cleared:  # the rest, starting at a different place each day for variety
+        k = int(hashlib.sha1(("%s|run|%s" % (user_id, day)).encode()).hexdigest(), 16) % len(cleared)
+        pool += [(t, "Replay for the workout") for t in cleared[k:] + cleared[:k]]
+    pool.append((W.TRAINING, "Training lap"))
+    seen, out = set(), []
+    for tid, why in pool:
+        if tid not in seen and is_unlocked(save, tid):
+            seen.add(tid)
+            out.append((tid, why))
+    return out
+
+
+def plan_steps(save, user_id, rows, minutes, day):
+    """The run: battles chained with breathers until about `minutes` (pure, no table access)."""
+    pool = _run_pool(save, user_id, rows, day)
+    target = minutes * 60
+    steps: list = []
+    total, last_break, i = 0, 0, 0
+    while len(steps) < 40:
+        tid, why = pool[i % len(pool)]
+        i += 1
+        if steps and steps[-1]["tid"] == tid:
+            continue
+        secs = battle_seconds(tid)
+        sweat = bool(steps) and total - last_break >= SWEAT_EVERY
+        gap = (SWEAT_SECONDS if sweat else REST_SECONDS) if steps else 0
+        if steps and total + gap + secs / 2.0 > target:
+            break
+        if sweat:
+            steps[-1]["sweat"] = True
+            last_break = total
+        total += gap + secs
+        if tid == W.TRAINING:
+            name, emoji, land = "The Training Yard", "🥊", "Lesson zero"
+        else:
+            li, n = W.split_tid(tid)
+            L = W.LANDS[li]
+            name, emoji, land = L["territories"][n - 1][0], L["emoji"], L["name"]
+        steps.append({"tid": tid, "name": name, "emoji": emoji, "land": land, "why": why, "seconds": secs,
+                      "boss": tid.endswith("-5"), "sweat": False})
+    return {"steps": steps, "seconds": total, "breaks": sum(1 for s in steps if s["sweat"])}
+
+
+@anvil.server.callable(require_user=True)
+def plan_run(minutes):
+    """Workout run: pick 10, 20 or 30 minutes; battles from your journey chained with breathers and sweat breaks."""
+    user = C.require_user()
+    try:
+        minutes = int(minutes)
+    except (TypeError, ValueError):
+        minutes = 0
+    if minutes not in RUN_MINUTES:
+        return C.fail("Pick 10, 20 or 30 minutes.")
+    save = _load(user)
+    cutoff = C.now() - dt.timedelta(days=30)
+    rows = [r for r in app_tables.battles.search(user=user) if r["created"] and r["created"] >= cutoff]
+    plan = plan_steps(save, user.get_id(), rows, minutes, C.now().date().isoformat())
+    return C.ok(minutes=minutes, started=C.iso(C.now()), **plan)
+
+
+@anvil.server.callable(require_user=True)
+def run_summary(since_iso):
+    """What you did since a run started: only your own battles."""
+    user = C.require_user()
+    try:
+        since = dt.datetime.fromisoformat(str(since_iso).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return C.fail("That run's start time didn't make sense.")
+    if since.tzinfo is None:
+        since = since.replace(tzinfo=dt.timezone.utc)
+    if since < C.now() - dt.timedelta(days=2):
+        return C.fail("That run is too old to sum up.")
+    rows = sorted((r for r in app_tables.battles.search(user=user) if r["created"] and r["created"] >= since),
+                  key=lambda r: r["created"])
+    mus = {k: 0.0 for k, _ in W.MUSCLES}
+    for r in rows:
+        for k, v in _muscles(r["moves"]).items():
+            mus[k] += v
+    shares, _ = _balance(mus, bool(rows))
+    return C.ok(
+        battles=len(rows), minutes=round(sum((r["seconds"] or 0) for r in rows) / 60.0, 1),
+        kcal=round(sum((r["kcal"] or 0) for r in rows), 1), punches=int(sum((r["punches"] or 0) for r in rows)),
+        stars=sum(int(r["stars"] or 0) for r in rows), muscles=shares,
+        follow=sum(1 for r in rows if r["intensity"] == "follow"),
+        list=[{"territory": r["territory"], "stars": r["stars"], "seconds": r["seconds"], "kcal": r["kcal"],
+               "accuracy": r["accuracy"], "intensity": r["intensity"], "when": C.iso(r["created"])} for r in rows])
 
 
 @anvil.server.callable

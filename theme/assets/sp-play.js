@@ -25,7 +25,7 @@
       '<div class="pl-score"><b data-score>0</b><span data-combo></span></div></div>' +
       '<div class="pl-hud-c"><div class="pl-bar gold"><i data-prog></i></div><div class="pl-tname" data-tname></div></div>' +
       '<div class="pl-hud-r"><span>Vigor</span><div class="pl-bar red"><i data-vigor></i></div><div data-rage hidden><span>🌶️ Rage</span><div class="pl-bar gold"><i data-ragebar></i></div></div></div></div>' +
-      '<div class="pl-callout" data-callout></div>' +
+      '<div class="pl-callout" data-callout></div><div class="pl-cue" data-cue aria-live="polite"></div>' +
       '<div class="pl-pad" data-pad hidden><div><button data-key="left" aria-label="Lean left"><b>⟵</b>Lean</button><button data-key="duck" aria-label="Duck"><b>⤓</b>Duck</button></div>' +
       '<div><button data-key="rage" data-ragebtn hidden aria-label="Spice rage"><b>🌶️</b>Rage</button><button data-key="block" aria-label="Block"><b>🛡️</b>Block</button><button data-key="right" aria-label="Lean right"><b>⟶</b>Lean</button></div></div>' +
       '<div class="pl-wrap" data-panelwrap><div class="pl-loading">Opening the gates…</div></div></div>';
@@ -40,6 +40,8 @@
     var test = window.SP_TEST || null;
     var tmpV = null, tmpV2 = null, headV = null;
     var sessionStart = Date.now();
+    var playMode = 'flat';            // how the last battle was played on this screen: 'flat' or 'follow' (a run keeps it)
+    var cd = null, cdT = null, cueT = null;   // the run's "Breathe" countdown; the follow-along callout timer
     var listeners = [];
     function on(target, ev, fn, opt) { target.addEventListener(ev, fn, opt); listeners.push([target, ev, fn, opt]); }
 
@@ -277,7 +279,7 @@
     }
 
     /* ---------------------------------------------------------------- the battle */
-    function newBattle() {
+    function newBattle(follow) {
       test = window.SP_TEST || null;
       var st = settings(), inten = content.intensity[st.intensity] || content.intensity.steady;
       var chart = SP.chart(tid, st);
@@ -295,7 +297,10 @@
         moves: {}, flurry: 0, failed: false, bossDown: false, boss: null, bossHp: 0, bossMax: Math.max(1, Math.ceil(punches * hpFrac)),
         // no running audio clock (blocked or failed): the game keeps its own time, without music
         useAudio: audio.running() && !test, clock: 0, tscale: test && test.speed ? test.speed : 1, t0: 0, lastT: 0, progress: 0,
-        paused: false, ended: false, beatShown: -1
+        paused: false, ended: false, beatShown: -1,
+        // follow-along: the snacks play themselves on the beat (the test robot, at real speed, music on) and big
+        // callouts tell you what to shadowbox; run: this battle is a step of a workout run (SP.runStep)
+        follow: !!follow, run: ctx.me ? SP.runStep(tid) : null
       };
       var lastB = chart.events.length ? chart.events[chart.events.length - 1].b : chart.beats;
       B.endB = lastB;
@@ -308,16 +313,16 @@
       return headV;
     }
 
-    function startBattle() {
-      vrClear(); vrTip(null);
+    function startBattle(follow) {
+      vrClear(); vrTip(null); stopCountdown();
       panelWrap.hidden = true;
-      newBattle();
+      newBattle(follow && mode === 'flat');
       if (mode === 'flat') cal = { x: 0, z: 0, h: 1.6 };   // in VR, cal was measured while you read the start card
       else vrHud();
       $('[data-hud]').hidden = false;
-      $('[data-tname]').textContent = info.t.name;
+      $('[data-tname]').textContent = info.t.name + (B.follow ? ' · follow along' : '') + (B.run ? ' · run ' + (B.run.i + 1) + '/' + B.run.n : '');
       $('[data-rage]').hidden = !B.hasRage;
-      $('[data-pad]').hidden = mode !== 'flat';
+      $('[data-pad]').hidden = mode !== 'flat' || B.follow;
       $('[data-ragebtn]').hidden = !B.hasRage;
       if (info.t.boss) spawnBoss();
       B.t0 = now() + 0.6;
@@ -451,7 +456,8 @@
         if (e.tip) { var mv = content.moves[e.tip]; callout(e.tip === 'mix' ? 'Now all together!<small>Watch the colours: green ring = left fist, red ring = right, gold = either.</small>' : mv.icon + ' ' + esc(mv.name) + '<small>' + esc(mv.how) + '</small>', 3200); continue; }
         spawn(e);
       }
-      if (test && test.autoplay) autoplay(t);
+      if ((test && test.autoplay) || B.follow) autoplay(t);
+      if (B.follow) cueStep(t);
       // move + judge
       var head = headPos();
       for (var i = B.live.length - 1; i >= 0; i--) {
@@ -523,13 +529,32 @@
       if (B.hasRage && B.rage >= 1) rage();
       if (mode === 'flat') stepFlat(0);   // take the pose now, not next frame
     }
+    /* Follow-along callouts: what to throw, a beat before each snack arrives ("LEFT JAB", "DUCK", "LEAN LEFT"). */
+    function cueText(o) {
+      if (o.move === 'duck') return 'DUCK';
+      if (o.move === 'block') return 'BLOCK';
+      if (o.move === 'lean') return o.side > 0 ? 'LEAN LEFT' : 'LEAN RIGHT';
+      var mv = content.moves[o.move];
+      return (o.hand === 'L' ? 'LEFT ' : o.hand === 'R' ? 'RIGHT ' : '') + (mv ? mv.name.toUpperCase() : o.move.toUpperCase());
+    }
+    function cueStep(t) {
+      var due = B.live.filter(function (o) { return !o.cued && !o.done && o.t - t <= B.spb + 0.05; });
+      if (!due.length) return;
+      due.sort(function (a, b) { return a.t - b.t; });
+      var words = due.map(function (o) { o.cued = true; return cueText(o); });
+      var el = $('[data-cue]');
+      el.textContent = words.join(' + ');
+      el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+      clearTimeout(cueT);
+      cueT = setTimeout(function () { if (alive) el.textContent = ''; }, Math.max(450, B.spb * 1600 / (B.tscale || 1)));
+    }
 
     function endBattle() {
       if (B.ended) return;
       B.ended = true;
       B.live.forEach(function (o) { if (!o.done) { o.done = true; } scene.remove(o.obj); });
       B.live = [];
-      $('[data-pad]').hidden = true;
+      $('[data-pad]').hidden = true; clearTimeout(cueT); $('[data-cue]').textContent = '';
       var acc = (B.hits + 0.5 * B.weak) / Math.max(1, B.total);
       var villager = info.t.villager && content.villagers[info.t.villager];
       if (!B.failed && acc >= 0.5 && !info.t.boss && (villager || info.training)) return startFlurry(villager);
@@ -567,8 +592,8 @@
           else if (d > 0.46) g.inCage = false;
         });
       }
-      // the test robot punches 4 times a second of game time, catching up when frames are slow
-      if (test && test.autoplay) {
+      // the test robot (and follow-along) punches 4 times a second of game time, catching up when frames are slow
+      if ((test && test.autoplay) || B.follow) {
         if (t > c.nextAuto) flatPunch(B.flurry % 2, c.obj.position);
         while (t > c.nextAuto && c.nextAuto < c.end) { c.nextAuto += 0.25; flurryHit(null); }
       }
@@ -597,7 +622,8 @@
       var moves = Object.assign({}, B.moves);
       var flurry = moves.flurry || 0; delete moves.flurry;
       return { total: B.total, hits: B.hits, weak: B.weak, max_combo: B.maxCombo, score: B.score,
-        seconds: Math.max(5, Math.round(now() - B.t0)), flurry: flurry, moves: moves, failed: B.failed, boss_down: B.bossDown, intensity: B.intensity };
+        seconds: Math.max(5, Math.round(now() - B.t0)), flurry: flurry, moves: moves, failed: B.failed, boss_down: B.bossDown,
+        intensity: B.intensity, follow: !!B.follow };
     }
     function finish() {
       if (!alive) return;
@@ -609,7 +635,10 @@
         if (r.progress) SP.setProgress(r.progress);
         return r;
       }, function (e) { return { error: e.message || 'Your result could not be saved.' }; });
-      out.then(function (r) { if (alive) showResults(r, st); });
+      out.then(function (r) {
+        if (B && B.run) SP.runFinished(tid);   // a run moves on even after a lost battle: it's about the minutes
+        if (alive) showResults(r, st);
+      });
     }
 
     /* ---------------------------------------------------------------- results */
@@ -632,9 +661,60 @@
     function catName(k) { var c = content.categories.filter(function (x) { return x.key === k; })[0]; return c ? c.name : k; }
     function resultTitle(r) {
       if (r.error) return 'Saved? Not quite.';
+      if (B && B.follow) return 'Follow-along done!';
       if (info.training) return r.cleared ? 'Training complete!' : 'Keep practising!';
       if (r.cleared) return info.t.boss ? land.boss.name + ' is defeated!' : info.t.name + ' is free!';
       return B.failed ? 'Out of vigor' : 'The Horde holds… for now';
+    }
+    /* A workout run's part of the results panel: the "Breathe" countdown to the next battle (a longer sweat break
+       every ~10 minutes), or the end of the run with a link to its summary (Pages/Workout opens Dialogs/RunSummary). */
+    function runBoxHtml() {
+      var run = B && B.run;
+      if (!run) return '';
+      var all = SP.runAll();
+      if (all && all.finished) {
+        return '<div class="pl-run-done" data-run-done><span class="em" aria-hidden="true">🏁</span><div><b>Workout run complete!</b>' +
+          '<span>' + run.n + ' battles, about ' + all.minutes + ' minutes. Stretch your arms and legs while you get your breath back.</span></div>' +
+          '<a class="ui-btn primary" href="#workout/run" data-go="workout/run">See your run summary</a></div>';
+      }
+      var live = SP.run(), nx = live ? live.steps[live.i] : null;   // read it fresh: runFinished may have swapped it
+      if (!nx) return '';
+      var sweat = !!run.step.sweat;
+      return '<div class="pl-run-cd' + (sweat ? ' sweat' : '') + '" data-cd role="timer" aria-live="off">' +
+        '<div class="pl-cd-ring" data-cd-ring><b data-cd-n>' + (sweat ? 45 : 20) + '</b></div>' +
+        '<div class="pl-cd-txt"><b>' + (sweat ? '💦 Sweat break' : '🌬️ Breathe') + '</b>' +
+        '<span>' + (sweat ? 'Lift the headset and wipe the face pad (or towel off). Sip some water.' : 'Shake out your arms. In through the nose, out through the mouth.') + '</span>' +
+        '<span class="pl-cd-next">Next: ' + esc(nx.emoji + ' ' + nx.name) + ' · battle ' + (live.i + 1) + ' of ' + run.n + '</span></div>' +
+        '<div class="pl-cd-btns"><button type="button" class="ui-btn sm" data-cd-pause>❚❚ Pause</button>' +
+        '<button type="button" class="ui-btn primary sm" data-cd-skip>Start now ▶</button></div></div>';
+    }
+    function stopCountdown() { clearInterval(cdT); cdT = null; cd = null; }
+    function drawCountdown() {
+      if (!cd) return;
+      var n = $('[data-cd-n]'), ring = $('[data-cd-ring]'), btn = $('[data-cd-pause]');
+      if (n) n.textContent = String(cd.left);
+      if (ring) ring.style.setProperty('--p', String(Math.round(cd.left / cd.total * 100)));
+      if (btn) btn.textContent = cd.paused ? '▶ Resume' : '❚❚ Pause';
+    }
+    function startCountdown(secs) {
+      stopCountdown();
+      cd = { left: secs, total: secs, paused: false };
+      drawCountdown();
+      cdT = setInterval(function () {
+        if (!alive || !cd) return stopCountdown();
+        if (cd.paused || document.hidden) return;
+        cd.left -= 1;
+        if (cd.left <= 0) { stopCountdown(); return runOnward(); }
+        drawCountdown();
+      }, test && test.speed ? Math.max(40, Math.round(1000 / test.speed)) : 1000);
+    }
+    function runOnward() {   // the next battle of the run, played the same way (on this screen or follow-along)
+      stopCountdown();
+      var next = SP.next(tid);
+      if (!next || !alive) return;
+      var how = playMode;
+      goTerritory(next);
+      if (how === 'follow') startFollow(); else startFlat();
     }
     function showResults(r, st) {
       state = 'results';
@@ -642,18 +722,29 @@
       var sceneKey = (r.rewards || []).filter(function (w) { return w.kind === 'scene'; }).map(function (w) { return w.id; })[0];
       if (mode !== 'flat') return vrResults(r, st, sceneKey);
       panelWrap.hidden = false;
+      var fol = B.follow, run = B.run;
       var stars = r.stars || 0, acc = Math.round((r.acc != null ? r.acc : (B.hits + 0.5 * B.weak) / Math.max(1, B.total)) * 100);
-      var next = SP.next(tid), canNext = next && SP.unlocked(next) && (r.cleared || info.training);
+      var next = SP.next(tid), canNext = !run && next && SP.unlocked(next) && (fol || r.cleared || info.training);
       var sh = SP.muscleShares(st.moves), mus = content.muscles.map(function (m) { return [m[1], sh[m[0]] || 0]; }).sort(function (a, b) { return b[1] - a[1]; });
       var tip = (Date.now() - sessionStart) > 20 * 60000 ? 'You\'ve played over 20 minutes. Pickles insists: water break! 💧' : TIPS[Math.floor(Math.random() * TIPS.length)];
-      panelWrap.innerHTML = '<div class="pl-panel" data-results data-cleared="' + (r.cleared ? 1 : 0) + '">' +
-        '<div class="pl-res-head"><h2>' + esc(resultTitle(r)) + '</h2><p class="pl-land">' + esc(info.training ? 'The Training Yard' : land.emoji + ' ' + land.name) + '</p>' +
-        '<div class="big-stars">' + [0, 1, 2].map(function (i) { return i < stars ? '★' : '<span class="off">★</span>'; }).join('') + '</div>' +
-        (r.best ? '<span class="ui-badge gold">New best score!</span>' : '') + '</div>' +
+      var moveCount = Object.keys(st.moves).reduce(function (a, k) { return a + st.moves[k]; }, 0) + (st.flurry || 0);
+      var kcalTxt = r.kcal != null ? Math.round(r.kcal) : '–';
+      var nums = fol
+        ? '<div><b>' + (Math.round(st.seconds / 6) / 10) + '</b><span>minutes</span></div><div><b>' + moveCount + '</b><span>moves thrown</span></div>' +
+          '<div><b>' + (st.flurry || 0) + '</b><span>flurry punches</span></div><div><b>' + kcalTxt + '</b><span>kcal (est.)</span></div>'
+        : '<div><b>' + B.score.toLocaleString() + '</b><span>score</span></div><div><b>' + acc + '%</b><span>hits</span></div>' +
+          '<div><b>' + B.maxCombo + '</b><span>best combo</span></div><div><b>' + kcalTxt + '</b><span>kcal (est.)</span></div>';
+      var runBox = runBoxHtml();
+      panelWrap.innerHTML = '<div class="pl-panel" data-results data-cleared="' + (r.cleared ? 1 : 0) + '"' + (fol ? ' data-follow-results' : '') + '>' +
+        '<div class="pl-res-head"><h2>' + esc(resultTitle(r)) + '</h2><p class="pl-land">' + esc(info.training ? 'The Training Yard' : land.emoji + ' ' + land.name) + (fol ? ' · ' + esc(info.t.name) : '') + '</p>' +
+        (fol ? '' : '<div class="big-stars">' + [0, 1, 2].map(function (i) { return i < stars ? '★' : '<span class="off">★</span>'; }).join('') + '</div>') +
+        (r.best && !fol ? '<span class="ui-badge gold">New best score!</span>' : '') + '</div>' +
         (r.error ? '<div class="ui-error" style="margin-top:12px">' + esc(r.error) + '</div>' : '') +
-        '<div class="pl-nums"><div><b>' + B.score.toLocaleString() + '</b><span>score</span></div><div><b>' + acc + '%</b><span>hits</span></div>' +
-        '<div><b>' + B.maxCombo + '</b><span>best combo</span></div><div><b>' + (r.kcal != null ? Math.round(r.kcal) : '–') + '</b><span>kcal (est.)</span></div></div>' +
-        (r.guest ? '<div class="ui-note">Nice punching! <b>Sign up</b> to save your progress and start the journey across Nourra.</div>' : '') +
+        runBox +
+        '<div class="pl-nums">' + nums + '</div>' +
+        (fol && !r.guest && !r.error ? '<div class="ui-note">🧍 Logged to your workout. Treasures need a real fight.</div>' : '') +
+        (fol && r.guest ? '<div class="ui-note">Nice shadowboxing! <b>Sign up</b> to log every workout and start the journey across Nourra.</div>' : '') +
+        (r.guest && !fol ? '<div class="ui-note">Nice punching! <b>Sign up</b> to save your progress and start the journey across Nourra.</div>' : '') +
         (rewardRows(r).length ? '<div class="ui-divider">Spoils</div><div class="pl-rewards">' + rewardRows(r).map(function (w, i) {
           return '<div class="pl-reward ' + w.cls + '" style="animation-delay:' + (i * 0.12) + 's"><span class="em">' + w.em + '</span><div><b>' + esc(w.title) + '</b><span>' + esc(w.sub) + '</span></div></div>';
         }).join('') + '</div>' : '') +
@@ -664,10 +755,11 @@
         '<div class="pl-go">' +
         (r.guest ? '<a class="ui-btn primary lg" href="#auth/signup" data-go="auth/signup">Sign up and start the journey</a>' : '') +
         (canNext && !r.guest ? '<button class="ui-btn primary lg" data-next>Onward: ' + esc(SP.terr(next).t.name) + ' ▶</button>' : '') +
-        '<button class="ui-btn lg" data-again>↻ Fight again</button>' +
+        '<button class="ui-btn lg" data-again>' + (fol ? '↻ Follow again' : '↻ Fight again') + '</button>' +
         '<a class="ui-btn ghost" href="#journey" data-go="' + (ctx.me ? 'journey' : 'landing') + '">' + (ctx.me ? '⌂ Back to the map' : 'Back to the front page') + '</a></div></div>';
       if (sceneKey) SP.markScene(sceneKey);
       panelWrap.scrollTop = 0;
+      if ($('[data-cd]')) startCountdown(run && run.step.sweat ? 45 : 20);
     }
     function vrResults(r, st, sceneKey) {
       vrClear();
@@ -677,12 +769,15 @@
         h = { x: cal.x, y: cal.h, z: cal.z };
         var rows = rewardRows(r).slice(0, 5).map(function (w) { return w.em + '  ' + w.title; });
         var acc = Math.round((r.acc || 0) * 100);
+        var run = B && B.run, all = SP.runAll();
+        var runLine = !run ? [] : [all && all.finished ? '🏁 Run complete! Take the headset off for your summary.'
+          : 'Workout run · battle ' + (run.i + 1) + ' of ' + run.n + (run.step.sweat ? ' · Sweat break: lift the headset, wipe the face pad' : ' · breathe, then NEXT')];
         var c = vrCanvasPlane(1.0, 0.9, drawCard({ eyebrow: info.training ? 'Training Yard' : land.name, title: resultTitle(r),
-          body: ['★'.repeat(r.stars || 0) + '☆'.repeat(3 - (r.stars || 0)) + '   ' + B.score.toLocaleString() + ' pts · ' + acc + '% · ' + Math.round(r.kcal || 0) + ' kcal'].concat(rows),
+          body: ['★'.repeat(r.stars || 0) + '☆'.repeat(3 - (r.stars || 0)) + '   ' + B.score.toLocaleString() + ' pts · ' + acc + '% · ' + Math.round(r.kcal || 0) + ' kcal'].concat(runLine, rows).slice(0, 6),
           foot: 'Punch an orb to choose' }));
         vrAdd(c, h.x, h.y + 0.05, h.z - 1.25);
         vr.redo = card;
-        var next = SP.next(tid), canNext = next && SP.unlocked(next) && (r.cleared || info.training) && !r.guest;
+        var next = SP.next(tid), canNext = run ? !!(SP.run() && next) : next && SP.unlocked(next) && (r.cleared || info.training) && !r.guest;
         if (canNext) vrOrb('NEXT ▶', h.x - 0.32, h.y - 0.42, h.z - 0.55, function () { goTerritory(next); });
         vrOrb('AGAIN', canNext ? h.x : h.x - 0.18, h.y - 0.42, h.z - 0.55, function () { vrStartCard(); }, '#6aa84f');
         vrOrb('EXIT VR', canNext ? h.x + 0.32 : h.x + 0.18, h.y - 0.42, h.z - 0.55, function () { if (session) session.end(); }, '#c9b8a0');
@@ -841,7 +936,7 @@
       if (B.boss) scene.remove(B.boss.obj);
       if (B.cage) scene.remove(B.cage.obj);
       B = null; state = 'menu';
-      $('[data-hud]').hidden = true; $('[data-pad]').hidden = true; $('[data-callout]').innerHTML = '';
+      $('[data-hud]').hidden = true; $('[data-pad]').hidden = true; $('[data-callout]').innerHTML = ''; $('[data-cue]').textContent = '';
     }
 
     /* ---------------------------------------------------------------- flat-screen play */
@@ -887,7 +982,7 @@
       if (mode !== 'flat' || !B) return;
       audio.init();
       if (state === 'flurry') { flatPunch(B.flurry % 2, B.cage.obj.position); flurryHit(null); return; }
-      if (state !== 'battle') return;
+      if (state !== 'battle' || B.follow) return;   // follow-along plays itself
       var o = pick(e.clientX, e.clientY);
       down = { x: e.clientX, y: e.clientY, o: o };
       if (o && !o.dirName) { flatPunch(o.hand === 'L' ? 0 : o.hand === 'R' ? 1 : (e.clientX < innerWidth / 2 ? 0 : 1), o.obj.position); scoreHit(o, null, 1, 0.75); down = null; }
@@ -946,7 +1041,20 @@
       var vil = info.t.villager && content.villagers[info.t.villager];
       var best = p && p.terr[tid];
       var bounty = p && p.bounty === tid && !p.bounty_claimed;
-      panelWrap.innerHTML = '<div class="pl-panel" data-menu-panel>' +
+      var rs = ctx.me ? SP.runStep(tid) : null, ended = SP.runAll();
+      var runBar = rs ? '<div class="pl-runbar" data-runbar><div><b>🏃 Workout run · battle ' + (rs.i + 1) + ' of ' + rs.n + '</b>' +
+          '<span>' + esc(rs.step.why) + (rs.left ? ' · about ' + Math.max(1, Math.round((rs.left + rs.step.seconds) / 60)) + ' min to go' : ' · the last one!') + '</span></div>' +
+          '<button type="button" class="ui-btn ghost sm" data-endrun>End run</button></div>'
+        : (ended && ended.finished ? '<div class="pl-runbar done"><div><b>🏁 Your workout run is complete</b><span>Nicely done.</span></div>' +
+          '<a class="ui-btn sm" href="#workout/run" data-go="workout/run">Summary</a></div>' : '');
+      var hand = SP.questLink('#play/' + tid);
+      var handoff = xr.vr ? '' : '<div class="sp-handoff in-panel" data-handoff><div class="sp-ho-top"><span class="sp-ho-em" aria-hidden="true">🥽</span>' +
+        '<div><b>Got a Quest?</b><span>Fight this battle in your headset</span></div></div>' +
+        '<div class="sp-ho-addr" translate="no">' + esc(hand.host) + '</div>' +
+        '<div class="sp-ho-btns"><a class="ui-btn gold" href="' + esc(hand.send) + '" target="_blank" rel="noopener" data-send-quest>Send to my Quest</a>' +
+        '<button type="button" class="ui-btn" data-copy="' + esc(hand.url) + '">Copy link</button></div>' +
+        '<p class="sp-ho-note">Sign in with Google on the headset: your journey follows you.</p></div>';
+      panelWrap.innerHTML = '<div class="pl-panel" data-menu-panel>' + runBar +
         '<div class="pl-top"><a class="ui-btn ghost sm" href="#journey" data-go="' + (ctx.me ? 'journey' : 'landing') + '">← ' + (ctx.me ? 'Map' : 'Back') + '</a>' +
         (best ? SP.stars(best.stars) : '') + '</div>' +
         '<h2>' + esc(info.t.name) + '</h2>' +
@@ -970,9 +1078,11 @@
         '<div class="pl-go">' +
         (xr.vr ? '<button class="ui-btn gold lg" data-xr="vr">🥽 Enter VR</button>' : '') +
         (xr.ar ? '<button class="ui-btn lg" data-xr="ar">🏠 VR with passthrough <small>(see your room)</small></button>' : '') +
-        '<button class="ui-btn ' + (xr.vr ? '' : 'primary') + ' lg" data-flat>🖥️ Play on this screen</button></div>' +
+        '<div class="pl-go-two"><button class="ui-btn ' + (xr.vr ? '' : 'primary') + ' lg" data-flat>🖥️ Play on this screen</button>' +
+        '<button class="ui-btn lg" data-follow title="The snacks punch themselves to the music; big callouts tell you what to throw, and you shadowbox">🧍 Follow along <small>(no headset)</small></button></div></div>' +
         '<p class="pl-note">' + (xr.vr ? '🛡️ Clear about 2 × 2 m around you, tighten the wrist straps, and keep water nearby.'
-          : '🥽 To play in VR, open this page in your headset\'s browser (Meta Quest Browser). On this screen: click or tap the snacks; drag up, down or sideways for uppercuts, hammer fists and hooks; ←/→ lean, ↓ duck, space blocks.') + '</p></div>';
+          : 'On this screen: click or tap the snacks; drag up, down or sideways for uppercuts, hammer fists and hooks; ←/→ lean, ↓ duck, space blocks. <b>Follow along</b>: stand back from the TV and shadowbox the callouts. It counts as a workout, not a win.') + '</p>' +
+        handoff + '</div>';
       panelWrap.scrollTop = 0;
     }
     function saveQuick(change) {
@@ -987,20 +1097,40 @@
     }
     function startFlat() {
       audio.init(); audio.volumes(settings().music, settings().sfx);
-      mode = 'flat'; applyMode();
+      mode = 'flat'; applyMode(); playMode = 'flat';
       startBattle();
+    }
+    function startFollow() {   // follow-along: no headset, shadowbox in front of the screen
+      audio.init(); audio.volumes(settings().music, settings().sfx);
+      mode = 'flat'; applyMode(); playMode = 'follow';
+      startBattle(true);
     }
 
     on(panelWrap, 'click', function (e) {
-      var t = e.target.closest('[data-int],[data-xr],[data-flat],[data-next],[data-again],[data-resume],[data-restart],[data-quitbattle]');
+      var t = e.target.closest('[data-int],[data-xr],[data-flat],[data-follow],[data-next],[data-again],[data-resume],[data-restart],[data-quitbattle],[data-cd-pause],[data-cd-skip],[data-endrun],[data-copy],[data-go]');
       if (!t) return;
+      if (t.hasAttribute('data-go')) return stopCountdown();   // (sp-kit.js follows the link)
       if (t.hasAttribute('data-int')) return saveQuick({ intensity: t.getAttribute('data-int') });
       if (t.hasAttribute('data-xr')) return enterXR(t.getAttribute('data-xr'));
       if (t.hasAttribute('data-flat')) return startFlat();
+      if (t.hasAttribute('data-follow')) return startFollow();
+      if (t.hasAttribute('data-cd-pause')) { if (cd) { cd.paused = !cd.paused; drawCountdown(); } return; }
+      if (t.hasAttribute('data-cd-skip')) return runOnward();
+      if (t.hasAttribute('data-endrun')) { SP.endRun(); UI.toast('Run ended. Every battle you fought is in your workout log.'); return showMenu(); }
+      if (t.hasAttribute('data-copy')) {
+        var btn = t;
+        return SP.copy(t.getAttribute('data-copy')).then(function (ok) {
+          if (!alive) return;
+          btn.textContent = ok ? 'Copied ✓' : 'Copy failed';
+          if (ok) UI.toast('Link copied. Paste it into Meta Quest Browser.', 'ok');
+          setTimeout(function () { if (btn.isConnected) btn.textContent = 'Copy link'; }, 1800);
+        });
+      }
+      stopCountdown();
       if (t.hasAttribute('data-next')) return goTerritory(SP.next(tid));
       if (t.hasAttribute('data-again')) { B = null; return showMenu(); }
       if (t.hasAttribute('data-resume')) return resume();
-      if (t.hasAttribute('data-restart')) { abort(); return startFlat(); }
+      if (t.hasAttribute('data-restart')) { var wasFollow = B && B.follow; abort(); return wasFollow ? startFollow() : startFlat(); }
       if (t.hasAttribute('data-quitbattle')) { abort(); return UI.go(ctx.me ? 'journey' : 'landing'); }
     });
     on(panelWrap, 'change', function (e) { if (e.target.matches('[data-seated]')) saveQuick({ seated: e.target.checked }); });
@@ -1070,7 +1200,7 @@
         if (renderer) { renderer.setAnimationLoop(null); renderer.dispose(); }
         audio.close();
         stopMenuMusic();
-        clearTimeout(calloutT); clearTimeout(flashT);
+        clearTimeout(calloutT); clearTimeout(flashT); clearTimeout(cueT); stopCountdown();
       }
     };
   });

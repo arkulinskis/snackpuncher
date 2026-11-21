@@ -1,36 +1,5 @@
 allow_embedding: false
 db_schema:
-  error_log:
-    client: none
-    columns:
-    - admin_ui: {order: 0, width: 200}
-      name: when
-      type: datetime
-    - admin_ui: {order: 1, width: 120}
-      name: source
-      type: string
-    - admin_ui: {order: 2, width: 160}
-      name: kind
-      type: string
-    - admin_ui: {order: 3, width: 300}
-      name: message
-      type: string
-    - admin_ui: {order: 4, width: 300}
-      name: traceback
-      type: string
-    - admin_ui: {order: 5, width: 200}
-      name: page
-      type: string
-    - admin_ui: {order: 6, width: 120}
-      name: session
-      type: string
-    - admin_ui: {order: 7, width: 200}
-      name: user
-      target: users
-      type: link_single
-    indexes: []
-    server: full
-    title: Error log
   app_settings:
     client: none
     columns:
@@ -114,6 +83,53 @@ db_schema:
     indexes: []
     server: full
     title: Battles
+  error_log:
+    client: none
+    columns:
+    - admin_ui:
+        order: 0
+        width: 200
+      name: when
+      type: datetime
+    - admin_ui:
+        order: 1
+        width: 120
+      name: source
+      type: string
+    - admin_ui:
+        order: 2
+        width: 160
+      name: kind
+      type: string
+    - admin_ui:
+        order: 3
+        width: 300
+      name: message
+      type: string
+    - admin_ui:
+        order: 4
+        width: 300
+      name: traceback
+      type: string
+    - admin_ui:
+        order: 5
+        width: 200
+      name: page
+      type: string
+    - admin_ui:
+        order: 6
+        width: 120
+      name: session
+      type: string
+    - admin_ui:
+        order: 7
+        width: 200
+      name: user
+      target: users
+      type: link_single
+    indexes: []
+    server: full
+    title: Error log
   feedback:
     client: none
     columns:
@@ -284,12 +300,76 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: "A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens."
-  logo_img: "asset:icon-512.png"
-  title: "Snackpuncher: a VR punching workout quest for Meta Quest"
+  description: 'A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands.
+    Every battle is a workout. Also plays on screens.'
+  logo_img: asset:icon-512.png
+  title: 'Snackpuncher: a VR punching workout quest for Meta Quest'
 name: Snackpuncher
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=f59275f80f\"></script>\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/snackpuncher.json and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://snackpuncher.anvil.app/\">\n<meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"VR workout game, Meta Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest passthrough game, no install VR game\">\n<meta name=\"author\" content=\"Arkvital\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:site_name\" content=\"Snackpuncher\">\n<meta property=\"og:title\" content=\"Snackpuncher: a VR punching workout quest for Meta Quest\">\n<meta property=\"og:description\" content=\"A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.\">\n<meta property=\"og:locale\" content=\"en_CA\">\n<meta property=\"og:url\" content=\"https://snackpuncher.anvil.app/\">\n<meta property=\"og:image\" content=\"https://snackpuncher.anvil.app/_/theme/og-image.png\">\n<meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\">\n<meta property=\"og:image:alt\" content=\"Snackpuncher: Punch the Greasy Horde across ten lands. Every battle is a workout.\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">\n<meta name=\"twitter:title\" content=\"Snackpuncher: a VR punching workout quest for Meta Quest\">\n<meta name=\"twitter:description\" content=\"A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.\">\n<meta name=\"twitter:image\" content=\"https://snackpuncher.anvil.app/_/theme/og-image.png\">\n<link rel=\"alternate\" type=\"text/plain\" title=\"Snackpuncher for AI assistants\" href=\"https://snackpuncher.anvil.app/llms.txt\">\n<script type=\"application/ld+json\">{\"@context\": \"https://schema.org\", \"@graph\": [{\"@type\": \"VideoGame\", \"@id\": \"https://snackpuncher.anvil.app/#app\", \"name\": \"Snackpuncher\", \"url\": \"https://snackpuncher.anvil.app/\", \"description\": \"A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.\", \"image\": \"https://snackpuncher.anvil.app/_/theme/og-image.png\", \"inLanguage\": \"en\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"}, \"keywords\": \"VR workout game, Meta Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest passthrough game, no install VR game\", \"applicationCategory\": \"GameApplication\", \"operatingSystem\": \"Any (web browser)\", \"featureList\": [\"Ten lands, 41 villagers to free and 100 treasures\", \"Plays in the Meta Quest Browser with no install, plus a passthrough mode\", \"Also playable on a normal screen with mouse, touch or keyboard\", \"Moves that rotate between muscle groups, with a workout ledger\", \"A Training Yard that teaches every move, playable as a guest\"], \"audience\": {\"@type\": \"Audience\", \"audienceType\": \"Meta Quest and WebXR players who want a workout that feels like a quest\"}}, {\"@type\": \"WebSite\", \"@id\": \"https://snackpuncher.anvil.app/#site\", \"url\": \"https://snackpuncher.anvil.app/\", \"name\": \"Snackpuncher\", \"publisher\": {\"@id\": \"https://arkvital.com/#org\"}}, {\"@type\": \"Organization\", \"@id\": \"https://arkvital.com/#org\", \"name\": \"Arkvital\", \"url\": \"https://arkvital.com\", \"email\": \"arkvital@outlook.com\", \"address\": {\"@type\": \"PostalAddress\", \"addressLocality\": \"Montreal\", \"addressRegion\": \"QC\", \"addressCountry\": \"CA\"}}]}</script>\n<noscript><div class=\"seo-noscript\">\n<h1>Snackpuncher: a VR punching workout quest for Meta Quest</h1>\n<p>A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.</p>\n<p>Snackpuncher is a single-player VR punching quest. The Greasy Horde, cartoon fast food with googly eyes, has overrun the realm of Nourra, and you punch your way across ten lands, free 41 villagers, collect 100 treasures and restore the Everpot.</p>\n<p>It plays in a VR headset through WebXR (Meta Quest Browser and other WebXR browsers), with an optional passthrough mode, and also on an ordinary screen with mouse, touch or keyboard. The moves rotate between muscle groups and a workout ledger keeps score.</p>\n<p>Who it's for: Meta Quest and WebXR players who want a workout that feels like a quest</p>\n<h2>What it does</h2><ul><li>Ten lands, 41 villagers to free and 100 treasures</li><li>Plays in the Meta Quest Browser with no install, plus a passthrough mode</li><li>Also playable on a normal screen with mouse, touch or keyboard</li><li>Moves that rotate between muscle groups, with a workout ledger</li><li>A Training Yard that teaches every move, playable as a guest</li></ul>\n<h2>Questions</h2><h3>Do I need to install anything on my Quest?</h3><p>No. Open the site in the Meta Quest Browser (or another WebXR browser) and enter VR.</p><h3>Can I play without a headset?</h3><p>Yes. It also plays on an ordinary screen with mouse, touch or keyboard.</p><h3>Is it a real workout?</h3><p>Every battle is made of punches and moves that rotate between muscle groups, and a workout ledger counts what you did.</p>\n<p><a href=\"https://snackpuncher.anvil.app/about\">About Snackpuncher</a> &middot; <a href=\"https://snackpuncher.anvil.app/llms.txt\">Snackpuncher for AI assistants</a> &middot; Made by <a href=\"https://arkvital.com\">Arkvital</a>, Montreal, Canada. Snackpuncher needs JavaScript in your browser.</p>\n</div></noscript>\n<!-- seo:end -->\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#2f6d3a\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap\" rel=\"stylesheet\">\n<link id=\"ui-favicon\" rel=\"icon\" type=\"image/svg+xml\" href=\"_/theme/icon.svg?v=f97bfcfd95\">\n<link rel=\"apple-touch-icon\" href=\"_/theme/icon-180.png?v=cec32f1f61\">\n<script>\n/* Keep our tab icon: Anvil adds its own <link rel=\"icon\">, so drop any other icon link. */\n(function () {\n  function keep() {\n    var ours = document.getElementById('ui-favicon');\n    if (!ours) return;\n    document.querySelectorAll('link[rel~=\"icon\"]').forEach(function (l) { if (l !== ours) l.remove(); });\n  }\n  keep();\n  document.addEventListener('DOMContentLoaded', keep);\n  window.addEventListener('load', keep);\n})();\n</script>\n\n<!-- Prepsto feedback panel: every \"Submit feedback\" link and button opens it (it is the only feedback channel). No floating button, no cookies, nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->\n<script src=\"https://prepsto.com/_/theme/widget.js\" data-prepsto=\"j9t8eqs\" data-button=\"false\" data-label=\"Submit feedback\" async></script>\n<link rel=\"stylesheet\" href=\"_/theme/icons.css?v=8f508d76cd\">\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=f487a3c6d8\">\n<script src=\"_/theme/app-kit.js?v=7393915faa\"></script>\n<script src=\"_/theme/sp-kit.js?v=8596a3f96d\"></script>\n<script src=\"_/theme/sp.js?v=02c98d6064\"></script>\n<script src=\"_/theme/ark-music.js?v=36193fd4e3\"></script>\n<script src=\"_/theme/sp-play.js?v=b1218ba91c\"></script>\n"
+  head_html: |
+    <script src="_/theme/legal-kit.js?v=f59275f80f"></script>
+    <!-- seo:start (APP_MAKER/seo: edit seo/apps/snackpuncher.json and run seo.py, not here) -->
+    <link rel="canonical" href="https://snackpuncher.anvil.app/">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="keywords" content="VR workout game, Meta Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest passthrough game, no install VR game">
+    <meta name="author" content="Arkvital">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Snackpuncher">
+    <meta property="og:title" content="Snackpuncher: a VR punching workout quest for Meta Quest">
+    <meta property="og:description" content="A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.">
+    <meta property="og:locale" content="en_CA">
+    <meta property="og:url" content="https://snackpuncher.anvil.app/">
+    <meta property="og:image" content="https://snackpuncher.anvil.app/_/theme/og-image.png">
+    <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Snackpuncher: Punch the Greasy Horde across ten lands. Every battle is a workout.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Snackpuncher: a VR punching workout quest for Meta Quest">
+    <meta name="twitter:description" content="A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.">
+    <meta name="twitter:image" content="https://snackpuncher.anvil.app/_/theme/og-image.png">
+    <link rel="alternate" type="text/plain" title="Snackpuncher for AI assistants" href="https://snackpuncher.anvil.app/llms.txt">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "VideoGame", "@id": "https://snackpuncher.anvil.app/#app", "name": "Snackpuncher", "url": "https://snackpuncher.anvil.app/", "description": "A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.", "image": "https://snackpuncher.anvil.app/_/theme/og-image.png", "inLanguage": "en", "publisher": {"@id": "https://arkvital.com/#org"}, "keywords": "VR workout game, Meta Quest fitness game, WebXR game, VR boxing game, punching game, browser VR game, exercise game, Quest passthrough game, no install VR game", "applicationCategory": "GameApplication", "operatingSystem": "Any (web browser)", "featureList": ["Ten lands, 41 villagers to free and 100 treasures", "Plays in the Meta Quest Browser with no install, plus a passthrough mode", "Also playable on a normal screen with mouse, touch or keyboard", "Moves that rotate between muscle groups, with a workout ledger", "A Training Yard that teaches every move, playable as a guest"], "audience": {"@type": "Audience", "audienceType": "Meta Quest and WebXR players who want a workout that feels like a quest"}}, {"@type": "WebSite", "@id": "https://snackpuncher.anvil.app/#site", "url": "https://snackpuncher.anvil.app/", "name": "Snackpuncher", "publisher": {"@id": "https://arkvital.com/#org"}}, {"@type": "Organization", "@id": "https://arkvital.com/#org", "name": "Arkvital", "url": "https://arkvital.com", "email": "arkvital@outlook.com", "address": {"@type": "PostalAddress", "addressLocality": "Montreal", "addressRegion": "QC", "addressCountry": "CA"}}]}</script>
+    <noscript><div class="seo-noscript">
+    <h1>Snackpuncher: a VR punching workout quest for Meta Quest</h1>
+    <p>A VR punching quest for Meta Quest and WebXR headsets: fight a horde of cartoon fast food across ten lands. Every battle is a workout. Also plays on screens.</p>
+    <p>Snackpuncher is a single-player VR punching quest. The Greasy Horde, cartoon fast food with googly eyes, has overrun the realm of Nourra, and you punch your way across ten lands, free 41 villagers, collect 100 treasures and restore the Everpot.</p>
+    <p>It plays in a VR headset through WebXR (Meta Quest Browser and other WebXR browsers), with an optional passthrough mode, and also on an ordinary screen with mouse, touch or keyboard. The moves rotate between muscle groups and a workout ledger keeps score.</p>
+    <p>Who it's for: Meta Quest and WebXR players who want a workout that feels like a quest</p>
+    <h2>What it does</h2><ul><li>Ten lands, 41 villagers to free and 100 treasures</li><li>Plays in the Meta Quest Browser with no install, plus a passthrough mode</li><li>Also playable on a normal screen with mouse, touch or keyboard</li><li>Moves that rotate between muscle groups, with a workout ledger</li><li>A Training Yard that teaches every move, playable as a guest</li></ul>
+    <h2>Questions</h2><h3>Do I need to install anything on my Quest?</h3><p>No. Open the site in the Meta Quest Browser (or another WebXR browser) and enter VR.</p><h3>Can I play without a headset?</h3><p>Yes. It also plays on an ordinary screen with mouse, touch or keyboard.</p><h3>Is it a real workout?</h3><p>Every battle is made of punches and moves that rotate between muscle groups, and a workout ledger counts what you did.</p>
+    <p><a href="https://snackpuncher.anvil.app/about">About Snackpuncher</a> &middot; <a href="https://snackpuncher.anvil.app/llms.txt">Snackpuncher for AI assistants</a> &middot; Made by <a href="https://arkvital.com">Arkvital</a>, Montreal, Canada. Snackpuncher needs JavaScript in your browser.</p>
+    </div></noscript>
+    <!-- seo:end -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#2f6d3a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+    <link id="ui-favicon" rel="icon" type="image/svg+xml" href="_/theme/icon.svg?v=f97bfcfd95">
+    <link rel="apple-touch-icon" href="_/theme/icon-180.png?v=cec32f1f61">
+    <script>
+    /* Keep our tab icon: Anvil adds its own <link rel="icon">, so drop any other icon link. */
+    (function () {
+      function keep() {
+        var ours = document.getElementById('ui-favicon');
+        if (!ours) return;
+        document.querySelectorAll('link[rel~="icon"]').forEach(function (l) { if (l !== ours) l.remove(); });
+      }
+      keep();
+      document.addEventListener('DOMContentLoaded', keep);
+      window.addEventListener('load', keep);
+    })();
+    </script>
+
+    <!-- Prepsto feedback panel: every "Submit feedback" link and button opens it (it is the only feedback channel). No floating button, no cookies, nothing loads until it is opened. Codes: APP_MAKER/prepsto-links.json -->
+    <script src="https://prepsto.com/_/theme/widget.js" data-prepsto="j9t8eqs" data-button="false" data-label="Submit feedback" async></script>
+    <link rel="stylesheet" href="_/theme/icons.css?v=8f508d76cd">
+    <link rel="stylesheet" href="_/theme/app.css?v=cf6ee1e934">
+    <script src="_/theme/app-kit.js?v=7393915faa"></script>
+    <script src="_/theme/sp-kit.js?v=8596a3f96d"></script>
+    <script src="_/theme/sp.js?v=6b3560d3ac"></script>
+    <script src="_/theme/ark-music.js?v=cf4e0878da"></script>
+    <script src="_/theme/sp-play.js?v=07e4d30681"></script>
 package_name: Snackpuncher
 runtime_options:
   client_version: '3'

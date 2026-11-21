@@ -1,0 +1,25 @@
+<div class="ui rn-dlg">
+  <h2 class="dlg-h">🏃 Workout run</h2>
+  <p class="muted">Pick a length. Battles from your journey are chained back to back, with a short breather between them and a sweat break about every ten minutes.</p>
+  <div class="ui-seg rn-len" role="group" aria-label="Run length">
+    <anvil-component type="Button" name="m10" prop:text="10 min" prop:role='["seg"]'></anvil-component>
+    <anvil-component type="Button" name="m20" prop:text="20 min" prop:role='["seg"]'></anvil-component>
+    <anvil-component type="Button" name="m30" prop:text="30 min" prop:role='["seg"]'></anvil-component>
+  </div>
+  <div class="rn-plan" anvil:name="plan_box">
+    <div class="rn-sum">
+      <anvil-component type="Label" name="total" prop:role='["rn-total"]'></anvil-component>
+      <anvil-component type="Label" name="detail" prop:role='["fine-print"]'></anvil-component>
+    </div>
+    <div class="rn-steps">
+      <anvil-component type="RepeatingPanel" name="steps_panel" prop:item_template="Snackpuncher.Items.RunStep" prop:role='["contents"]'></anvil-component>
+    </div>
+    <p class="fine-print rn-how">On a screen, the next battle starts by itself after a 20-second breather (you can pause or skip it). In VR, punch NEXT.</p>
+  </div>
+  <div class="rn-loading" anvil:name="loading_box"><span class="rn-spin" aria-hidden="true"></span>Planning your route…</div>
+  <anvil-component type="Label" name="message" prop:role='["msg-error"]' prop:visible="false"></anvil-component>
+  <div class="ui-row end rn-actions">
+    <anvil-component type="Button" name="cancel_button" prop:text="Cancel" prop:role='["btn", "btn-ghost"]'></anvil-component>
+    <anvil-component type="Button" name="start_button" prop:text="Start the run ▶" prop:role='["btn", "btn-primary"]'></anvil-component>
+  </div>
+</div>

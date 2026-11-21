@@ -1,0 +1,22 @@
+---
+custom_component: true
+properties: []
+toolbox_item:
+  title: Send it to your Quest
+  group: Snackpuncher
+help_text: |
+  The "Got a Quest?" card for visitors without a headset on: the address in big letters, "Send to my Quest" (Meta's
+  Web Launch link, https://www.oculus.com/open_url/?url=...) and Copy link. Hidden in browsers that can enter VR
+  (SP.xrSupported in theme/assets/sp.js). Call setup("#play/training") with the page to open on the headset.
+---
+<div class="sp-ho-host">
+  <div class="sp-handoff is-hidden" anvil:dom-node="card">
+    <div class="sp-ho-top"><span class="sp-ho-em" aria-hidden="true">🥽</span><div><b>Got a Quest?</b><span anvil:dom-node="sub">Open Snackpuncher in your headset</span></div></div>
+    <div class="sp-ho-addr" translate="no" anvil:dom-node="addr">snackpuncher.anvil.app</div>
+    <div class="sp-ho-btns">
+      <a class="ui-btn gold" anvil:dom-node="send" href="https://www.oculus.com/open_url/" target="_blank" rel="noopener">Send to my Quest</a>
+      <button type="button" class="ui-btn" anvil:dom-node="copy">Copy link</button>
+    </div>
+    <p class="sp-ho-note">Sign in with Google on the headset: your journey follows you.</p>
+  </div>
+</div>

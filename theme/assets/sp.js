@@ -32,8 +32,83 @@
     return TERR[tid] || null;
   };
   SP.order = function () { return cache ? [].concat.apply([], cache.content.lands.map(function (L) { return L.territories.map(function (t) { return t.id; }); })) : []; };
-  SP.next = function (tid) { var o = SP.order(), i = o.indexOf(tid); return tid === 'training' ? o[0] : (i >= 0 && i < o.length - 1 ? o[i + 1] : null); };
+  SP.next = function (tid) {
+    var r = SP.run();   // in a workout run, Next follows the plan (even after a battle that wasn't won)
+    if (r && r.i > 0 && r.i < r.steps.length && r.steps[r.i - 1].tid === tid) return r.steps[r.i].tid;
+    var o = SP.order(), i = o.indexOf(tid); return tid === 'training' ? o[0] : (i >= 0 && i < o.length - 1 ? o[i + 1] : null);
+  };
   SP.prog = function () { return cache && cache.progress; };
+
+  /* ------------------------------------------------------------------ workout runs
+     Dialogs/RunPicker asks the server for a plan (Game.plan_run) and keeps it here, in the browser (UI.store), so a
+     reload or a trip to the map keeps the run. run = {started (server time), minutes, seconds, breaks,
+     steps: [{tid, name, emoji, land, why, seconds, boss, sweat}], i: the next step to play, finished, at}. */
+  var RUN_KEY = 'sp_run', RUN_TTL = 3 * 3600 * 1000;
+  SP.runAll = function () {
+    var r = UI.store.get(RUN_KEY, null);
+    if (!r || !r.steps || !r.steps.length) return null;
+    if (Date.now() - (r.at || 0) > RUN_TTL) { UI.store.set(RUN_KEY, null); return null; }
+    return r;
+  };
+  SP.run = function () { var r = SP.runAll(); return r && !r.finished ? r : null; };
+  SP.setRun = function (r) { if (r) { r.i = r.i || 0; r.at = r.at || Date.now(); } UI.store.set(RUN_KEY, r || null); return r; };
+  SP.endRun = function () { UI.store.set(RUN_KEY, null); };
+  /* The run step this battle is, or null: {i, n, step, next, left (seconds still to go after this one)}. */
+  SP.runStep = function (tid) {
+    var r = SP.run();
+    if (!r || r.steps[r.i].tid !== tid) return null;
+    var left = 0;
+    for (var k = r.i + 1; k < r.steps.length; k++) left += r.steps[k].seconds + 25;
+    return { i: r.i, n: r.steps.length, step: r.steps[r.i], next: r.steps[r.i + 1] || null, left: left };
+  };
+  SP.battleSeconds = function (tid) {   // same formula as Game.battle_seconds
+    var info = SP.terr(tid);
+    if (!info || info.training) return 105;
+    var n = info.t.n;
+    return 72 + info.land.index * 7 + (n - 1) * 4 + (info.t.boss ? 40 : 0) + (info.t.villager ? 8 : 2);
+  };
+  /* A run battle is over: move on. A "next on your journey" step you've just cleared becomes your new next territory. */
+  SP.runFinished = function (tid) {
+    var r = SP.run();
+    if (!r || r.steps[r.i].tid !== tid) return null;
+    r.i += 1;
+    if (r.i >= r.steps.length) { r.finished = true; return SP.setRun(r); }
+    var nx = r.steps[r.i], p = SP.prog();
+    if (p && /^Next on your journey/.test(nx.why) && SP.starsOf(nx.tid) >= 1 && p.current && p.current !== tid) {
+      var info = SP.terr(p.current);
+      if (info) { nx.tid = p.current; nx.name = info.t.name; nx.emoji = info.land.emoji; nx.land = info.land.name; nx.boss = !!info.t.boss; nx.seconds = SP.battleSeconds(p.current); }
+    }
+    return SP.setRun(r);
+  };
+  /* Can this browser enter VR? (false on phones and desktops without a headset; Components/HeadsetHandoff, sp-play.js) */
+  var xrP = null;
+  SP.xrSupported = function () {
+    if (window.SP_TEST && window.SP_TEST.xr != null) return Promise.resolve(!!window.SP_TEST.xr);
+    if (!xrP) xrP = (navigator.xr && navigator.xr.isSessionSupported) ? navigator.xr.isSessionSupported('immersive-vr').then(function (v) { return !!v; }, function () { return false; }) : Promise.resolve(false);
+    return xrP;
+  };
+  /* The same for Python callers, which would wait on a returned Promise: cb(supported) runs later, nothing is returned. */
+  SP.whenXR = function (cb) { SP.xrSupported().then(function (v) { try { cb(v); } catch (e) { console.error(e); } }); };
+  /* Put text on the clipboard (with an old-browser fallback). Resolves true when it worked. */
+  SP.copy = function (text) {
+    function fallback() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) { return false; }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(function () { return true; }, fallback);
+    return Promise.resolve(fallback());
+  };
+  /* Meta's Web Launch: opens a page on the player's Quest (they pick the headset after signing in to Meta). */
+  SP.questLink = function (hash) {
+    var url = location.origin + location.pathname + (hash || '');
+    return { url: url, send: 'https://www.oculus.com/open_url/?url=' + encodeURIComponent(url), host: location.host };
+  };
   SP.starsOf = function (tid) { var p = SP.prog(); return p && p.terr[tid] ? (p.terr[tid].stars || 0) : 0; };
   SP.unlocked = function (tid) { var p = SP.prog(); return tid === 'training' || !!(p && p.unlocked.indexOf(tid) >= 0); };
   SP.GUEST_SETTINGS = { intensity: 'steady', seated: false, nofail: false, weight: null, music: 0.7, sfx: 0.9, skin: 'classic', passthrough: false };

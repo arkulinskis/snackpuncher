@@ -55,6 +55,15 @@
       </section>
 
       <div class="jr-side">
+        <div class="ui-card jr-run">
+          <h3>🏃 Workout run</h3>
+          <anvil-component type="Label" name="run_text" prop:role='["jr-blurb"]'></anvil-component>
+          <div class="ui-row jr-run-go">
+            <a class="ui-btn primary" anvil:name="run_go" href="#play/training"><anvil-component type="Label" name="run_go_text"></anvil-component></a>
+            <anvil-component type="Button" name="run_start" prop:text="Start a workout run" prop:role='["btn", "btn-primary"]'></anvil-component>
+            <anvil-component type="Button" name="run_end" prop:text="End run" prop:role='["btn", "btn-ghost", "btn-sm"]'></anvil-component>
+          </div>
+        </div>
         <div class="ui-card">
           <h3>🥊 The Training Yard</h3>
           <p class="muted">Sir Broccolot teaches every move, one at a time. Good as a warm-up any day.</p>

@@ -8,6 +8,7 @@ and the bridge to the JavaScript engines (theme/assets/sp.js = window.SP, sp-pla
     sp.set_progress(p)       after a server call returned a new save (buy_upgrade)
     sp.forget()              after reset_progress / sign-in changes
     sp.stars_text(n)         '★★☆' for Labels;  sp.sprouts_text(n) '🌱 1,234'
+    sp.start_run(plan) / sp.run() / sp.run_all() / sp.end_run()   the workout run (Dialogs/RunPicker, RunSummary)
 """
 import json
 
@@ -55,6 +56,45 @@ def set_settings(settings):
     if g is not None and g.get("progress") and settings:
         g["progress"]["settings"] = settings
         window.SP.setProgress(js_value(g["progress"]))
+
+
+# ---------------------------------------------------------------- workout runs (kept in the browser by sp.js: SP.run)
+def start_run(plan):
+    """Keep a plan from Game.plan_run as the current run (the battle engine follows it)."""
+    keep = {k: plan.get(k) for k in ("started", "minutes", "seconds", "breaks", "steps")}
+    keep["i"] = 0
+    window.SP.setRun(js_value(keep))
+
+
+def _py(js_obj):
+    return json.loads(window.JSON.stringify(js_obj)) if js_obj else None
+
+
+def run():
+    """The run in progress (dict) or None."""
+    return _py(window.SP.run())
+
+
+def run_all():
+    """The current run, finished or not (for the summary), or None."""
+    return _py(window.SP.runAll())
+
+
+def end_run():
+    window.SP.endRun()
+
+
+def battle_row(g, r):
+    """A logged battle (workout_stats "recent", run_summary "list") -> an Items/BattleRow item."""
+    tt, _ = terr(g, r["territory"])
+    name = tt["name"] if tt else ("The Training Yard" if r["territory"] == "training" else r["territory"])
+    mins = round((r["seconds"] or 0) / 6) / 10
+    if r.get("intensity") == "follow":
+        meta = "%s · %s min · %d kcal · 🧍 Follow-along" % (state.ago(r["when"]), mins, round(r["kcal"] or 0))
+        return {"name": name, "meta": meta, "stars": "", "n": 0}
+    meta = "%s · %s min · %d kcal · %d%% · %s" % (state.ago(r["when"]), mins, round(r["kcal"] or 0),
+                                                round((r["accuracy"] or 0) * 100), r["intensity"])
+    return {"name": name, "meta": meta, "stars": stars_text(r["stars"]), "n": int(r["stars"] or 0)}
 
 
 def land(g, key):

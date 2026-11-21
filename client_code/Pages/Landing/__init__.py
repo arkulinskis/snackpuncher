@@ -18,6 +18,10 @@ class Landing(LandingTemplate):
         me = state.me()
         self.guest_cta.visible = self.guest_note.visible = self.band_guest.visible = not me
         self.member_cta.visible = self.band_member.visible = bool(me)
+        if me:
+            self.handoff.setup("#journey", "Carry on your journey in your headset")
+        else:
+            self.handoff.setup("#play/training", "Try the Training Yard in your headset")
         self.dom_nodes["yt_cover"].addEventListener("click", self._play)
         self._realm()
         self._world()

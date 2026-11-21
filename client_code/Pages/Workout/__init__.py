@@ -45,8 +45,31 @@ class Workout(WorkoutTemplate):
         state.set_control_attr(self.weight_box, "step", 0.5)
         self.g = sp.game(force=True)
         self.w = anvil.server.call("workout_stats")
+        self._summary = bool(args) and args[0] == "run"  # #workout/run: the end of a workout run (sp-play.js links here)
         self._draw()
         self._settings()
+
+    @handle("", "show")
+    def form_show(self, **event_args):
+        if not self._summary:
+            return
+        self._summary = False
+        router.replace("workout")
+        run = sp.run_all()
+        if not run or not run.get("started"):
+            state.toast("That workout run has already been summed up. Your battles are all below.")
+            return
+        from ...Dialogs.RunSummary import RunSummary
+        again = alert(RunSummary(game=self.g, run=run), buttons=[], role="app-dialog", dismissible=True, large=True)
+        if run.get("finished"):
+            sp.end_run()
+        if again == "again":
+            self.run_button_click()
+
+    @handle("run_button", "click")
+    def run_button_click(self, **event_args):
+        from ...Dialogs.RunPicker import open_picker
+        open_picker()
 
     def _draw(self):
         c, w = self.g["content"], self.w
@@ -81,13 +104,7 @@ class Workout(WorkoutTemplate):
         self.moves_panel.items = [{"text": "%s %s ×%s" % (c["moves"][m]["icon"], c["moves"][m]["name"], sp.number(w["moves"][m])),
                                    "title": c["moves"][m]["how"]} for m in used]
         self.no_moves.visible = not used
-        rows = []
-        for r in w["recent"]:
-            tt, _ = sp.terr(self.g, r["territory"])
-            name = tt["name"] if tt else ("The Training Yard" if r["territory"] == "training" else r["territory"])
-            meta = "%s · %s min · %d kcal · %d%% · %s" % (state.ago(r["when"]), round((r["seconds"] or 0) / 6) / 10,
-                                                        round(r["kcal"] or 0), round((r["accuracy"] or 0) * 100), r["intensity"])
-            rows.append({"name": name, "meta": meta, "stars": sp.stars_text(r["stars"]), "n": int(r["stars"] or 0)})
+        rows = [sp.battle_row(self.g, r) for r in w["recent"]]  # follow-along sessions say so instead of stars
         self.recent_panel.items = rows
         self.no_recent.visible = not rows
 

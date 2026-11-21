@@ -3,7 +3,10 @@
     <div class="ui-wrap">
       <div class="ui-page-head">
         <div><h1>Your workout</h1><p class="muted">The fitness ledger: every battle is exercise. Here's what you've put in.</p></div>
-        <anvil-component type="Label" name="streak" prop:role='["sp-chip", "wk-streak"]'></anvil-component>
+        <div class="wk-head-r">
+          <anvil-component type="Label" name="streak" prop:role='["sp-chip", "wk-streak"]'></anvil-component>
+          <anvil-component type="Button" name="run_button" prop:text="🏃 Start a workout run" prop:role='["btn", "btn-primary"]'></anvil-component>
+        </div>
       </div>
 
       <div class="wk-tiles">

@@ -1,0 +1,23 @@
+<div class="ui rn-dlg">
+  <h2 class="dlg-h">🏁 Run complete</h2>
+  <anvil-component type="Label" name="lead" prop:role='["rn-lead"]'></anvil-component>
+  <div class="rn-loading" anvil:name="loading_box"><span class="rn-spin" aria-hidden="true"></span>Adding it up…</div>
+  <anvil-component type="Label" name="message" prop:role='["msg-error"]' prop:visible="false"></anvil-component>
+  <div anvil:name="result_box">
+    <div class="rn-nums">
+      <div><anvil-component type="Label" name="n_minutes" prop:role='["rn-big"]'></anvil-component><span>minutes</span></div>
+      <div><anvil-component type="Label" name="n_kcal" prop:role='["rn-big"]'></anvil-component><span>kcal (est.)</span></div>
+      <div><anvil-component type="Label" name="n_punches" prop:role='["rn-big"]'></anvil-component><span>snacks punched</span></div>
+      <div><anvil-component type="Label" name="n_battles" prop:role='["rn-big"]'></anvil-component><span>battles</span></div>
+    </div>
+    <h3 class="rn-h">What you worked</h3>
+    <div class="wk-mus"><anvil-component type="RepeatingPanel" name="muscles_panel" prop:item_template="Snackpuncher.Items.MuscleRow" prop:role='["contents"]'></anvil-component></div>
+    <h3 class="rn-h">The battles</h3>
+    <div class="wk-recent rn-list"><anvil-component type="RepeatingPanel" name="battles_panel" prop:item_template="Snackpuncher.Items.BattleRow" prop:role='["contents"]'></anvil-component></div>
+    <div class="ui-empty rn-empty" anvil:name="empty_box">No battles were logged during this run. Next time, finish at least one and it shows up here.</div>
+  </div>
+  <div class="ui-row end rn-actions">
+    <anvil-component type="Button" name="again_button" prop:text="Plan another run" prop:role='["btn", "btn-ghost"]'></anvil-component>
+    <anvil-component type="Button" name="done_button" prop:text="Done" prop:role='["btn", "btn-primary"]'></anvil-component>
+  </div>
+</div>
